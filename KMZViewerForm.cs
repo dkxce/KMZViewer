@@ -189,6 +189,7 @@ namespace KMZ_Viewer
         private Timer mmTimer = null;
         private void MapViewer_MouseMove(object sender, MouseEventArgs e)
         {
+            locate = false;
             if (e.Button != MouseButtons.None) mapTootTip.Hide(this);
 
             if (mmTimer != null)
@@ -250,13 +251,14 @@ namespace KMZ_Viewer
         }
 
         private void MapViewer_MouseClick(object sender, MouseEventArgs e)
-        {                                    
+        {
+            if (!locate) return;                     
             if (mapContent.ObjectsCount == 0) return;
             Point clicked = MapViewer.MousePositionPixels;
             PointF sCenter = MapViewer.PixelsToDegrees(clicked);
             PointF sFrom = MapViewer.PixelsToDegrees(new Point(clicked.X - 5, clicked.Y + 5));
             PointF sTo = MapViewer.PixelsToDegrees(new Point(clicked.X + 5, clicked.Y - 5));
-            NaviMapNet.MapObject[] objs = mapContent.Select(new RectangleF(sFrom, new SizeF(sTo.X - sFrom.X, sTo.Y - sTo.X)));
+            NaviMapNet.MapObject[] objs = mapContent.Select(new RectangleF(sFrom, new SizeF(sTo.X - sFrom.X, sTo.Y - sFrom.Y)));
             if ((objs != null) && (objs.Length > 0))
             {
                 uint len = uint.MaxValue;
@@ -1596,6 +1598,12 @@ namespace KMZ_Viewer
         private void KMZViewerForm_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+        }
+
+        private bool locate = false;
+        private void MapViewer_MouseDown(object sender, MouseEventArgs e)
+        {
+            locate = true;
         }
     }
 }

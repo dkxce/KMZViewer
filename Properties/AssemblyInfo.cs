@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("milokz@gmail.com")]
 [assembly: AssemblyProduct("KMZ Viewer")]
-[assembly: AssemblyCopyright("Copyright © milokz@gmail.com 2016")]
+[assembly: AssemblyCopyright("Copyright © milokz@gmail.com 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("16.8.14.1")]
-[assembly: AssemblyFileVersion("16.8.14.1")]
+[assembly: AssemblyVersion("17.3.14.2")]
+[assembly: AssemblyFileVersion("17.3.14.2")]

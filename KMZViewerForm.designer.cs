@@ -284,6 +284,7 @@ namespace KMZ_Viewer
             this.MapViewer.ZoomID = ((byte)(10));
             this.MapViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapViewer_MouseMove);
             this.MapViewer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MapViewer_MouseClick);
+            this.MapViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapViewer_MouseDown);
             // 
             // tabControl1
             // 
