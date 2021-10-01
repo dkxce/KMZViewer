@@ -11,7 +11,7 @@
     <AssemblyName>KMZViewer</AssemblyName>
     <ApplicationIcon>butterfly.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug %28Full%29|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -28,38 +28,103 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug %28NOFR24%29|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NOFR24</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AgwpePort, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\AgwpePort.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.5.452, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="NaviMapNet, Version=1.0.6001.20706, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="NaviMapNet, Version=1.0.6730.15119, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\NaviMapNet.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ThoughtWorks.QRCode, Version=1.0.6497.24369, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\ThoughtWorks.QRCode.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="aprsview.cs" />
+    <Compile Include="ax25kiss.cs" />
+    <Compile Include="DBFRegions.cs" />
+    <Compile Include="ExifRewriteFiles.cs" />
+    <Compile Include="FileAss.cs" />
+    <Compile Include="fit_Definitions.cs" />
+    <Compile Include="fit_FastCrc.cs" />
+    <Compile Include="fit_Parser.cs" />
+    <Compile Include="FlightRadar24GW.cs" />
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KISS.cs" />
     <Compile Include="KMZViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="KMZViewerForm.designer.cs">
       <DependentUpon>KMZViewerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LatLonParser.cs" />
+    <Compile Include="MruList.cs" />
+    <Compile Include="NavitelGDB.cs" />
+    <Compile Include="PolyLineBufferSimp.cs" />
+    <Compile Include="ProcessingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProcessingForm.Designer.cs">
+      <DependentUpon>ProcessingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProGorodPOI.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="KMZViewerForm.resx">
       <DependentUpon>KMZViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProcessingForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProcessingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RenameDat.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RenameDat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReportForm.resx">
+      <DependentUpon>ReportForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectIcon.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SelectIcon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selection Filter.resx">
+      <DependentUpon>Selection Filter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WGSFormX.resx">
+      <DependentUpon>WGSFormX.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -76,9 +141,65 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="RenameDat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameDat.Designer.cs">
+      <DependentUpon>RenameDat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReportForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReportForm.Designer.cs">
+      <DependentUpon>ReportForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SelectIcon.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectIcon.Designer.cs">
+      <DependentUpon>SelectIcon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Selection Filter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selection Filter.designer.cs">
+      <DependentUpon>Selection Filter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TNCState.cs" />
+    <Compile Include="translit.cs" />
+    <Compile Include="WGSFormX.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WGSFormX.Designer.cs">
+      <DependentUpon>WGSFormX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XProcessMessages.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="beep-06.wav" />
+    <None Include="aprs2nd.png" />
+    <None Include="aprs1st.png" />
     <Content Include="butterfly.ico" />
+    <None Include="Resources\progorod19.png" />
+    <None Include="Resources\progorod18.png" />
+    <None Include="Resources\progorod17.png" />
+    <None Include="Resources\progorod16.png" />
+    <None Include="Resources\progorod15.png" />
+    <None Include="Resources\progorod14.png" />
+    <None Include="Resources\progorod13.png" />
+    <None Include="Resources\progorod12.png" />
+    <None Include="Resources\progorod11.png" />
+    <None Include="Resources\progorod10.png" />
+    <None Include="Resources\progorod09.png" />
+    <None Include="Resources\progorod08.png" />
+    <None Include="Resources\progorod07.png" />
+    <None Include="Resources\progorod06.png" />
+    <None Include="Resources\progorod05.png" />
+    <None Include="Resources\progorod04.png" />
+    <None Include="Resources\progorod03.png" />
+    <None Include="Resources\progorod02.png" />
+    <None Include="Resources\progorod01.png" />
+    <None Include="Resources\progorod00.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

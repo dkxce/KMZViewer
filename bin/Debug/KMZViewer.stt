@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<State xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SASCacheDir>C:\Program Files\SASPlanet\cache</SASCacheDir>
+  <MapID>1</MapID>
+  <SASDir>C:\Program Files\SASPlanet\cache\MAP</SASDir>
+  <URL>http://tile.openstreetmap.org/{z}/{x}/{y}.png</URL>
+  <X>37.50457763671875</X>
+  <Y>55.455498798971156</Y>
+  <Z>9</Z>
+</State>

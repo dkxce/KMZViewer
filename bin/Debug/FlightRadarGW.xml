@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FRGWCFG>
+  <GrabInterval hint="seconds, min 5 max 255, default 15">10</GrabInterval>
+  <GrabURL hint="replace {BOUNDS} were bounds">https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds={BOUNDS}&amp;faa=1&amp;satellite=1&amp;mlat=1&amp;flarm=1&amp;adsb=1&amp;gnd=1&amp;air=1&amp;vehicles=1&amp;estimated=1&amp;maxage=14400&amp;gliders=1&amp;stats=1</GrabURL>  
+  <UserAgent>Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0</UserAgent>
+  <Referer>https://www.flightradar24.com/</Referer>
+</FRGWCFG>

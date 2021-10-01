@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<APRSCFG xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <hipp>    
+    <string>83.69.193.22:12015</string>
+    <string>aprs.cqham.ru:14580</string>
+    <string>COM3:9600</string>
+  </hipp>
+  <selected>1</selected>
+  <callsign>viewonly</callsign>
+  <password>-1</password>
+  <filter>r/55.55/37.55/350 m/350 -fn/AIR</filter>
+  <mode>1</mode>
+  <last>127.0.0.1:8000</last>
+</APRSCFG>
