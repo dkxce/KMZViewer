@@ -33,6 +33,6 @@ AGW, KISS TNС и отображать полученные объекты с к
 на карте (Beacon, WX, Point). Работает с Serial/COM Kiss.
 Есть возможность следить за объектом при его перемещении.
 
-<img src="window.jpg"/>
+<img src="window.png"/>
 <img src="kmzviewer_001.jpg"/>
 <img src="kmzviewer_002.jpg"/>
