@@ -4,6 +4,9 @@ Simple tool to view kml/kmz files
 
 Это небольшая но весьма мощная утилита для просмотра kml и kmz файлов
 
+[KMZ Repository](https://github.com/dkxce/KMZ_FILES)     
+[KMZ Репозиторий](https://github.com/dkxce/KMZ_FILES)     
+
 ---
 
 Это программа для просмотра POI на тайловых картах.
