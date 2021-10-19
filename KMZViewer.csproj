@@ -65,6 +65,7 @@
     <Compile Include="aprsview.cs" />
     <Compile Include="ax25kiss.cs" />
     <Compile Include="DBFRegions.cs" />
+    <Compile Include="DNSLookUp.cs" />
     <Compile Include="ExifRewriteFiles.cs" />
     <Compile Include="FileAss.cs" />
     <Compile Include="fit_Definitions.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="fit_Parser.cs" />
     <Compile Include="FlightRadar24GW.cs" />
     <Compile Include="InputBox.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="KISS.cs" />
     <Compile Include="KMZViewerForm.cs">
