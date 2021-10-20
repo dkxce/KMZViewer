@@ -46,3 +46,4 @@ AGW, KISS TNС и отображать полученные объекты с к
 <img src="windowC.png"/>
 <img src="windowD.png"/>
 <img src="windowE.png"/>
+<img src="windowF.png"/>
