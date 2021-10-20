@@ -43,3 +43,6 @@ AGW, KISS TNС и отображать полученные объекты с к
 <img src="kmzviewer_002.jpg"/>
 <img src="windowA.png"/>
 <img src="windowB.png"/>
+<img src="windowC.png"/>
+<img src="windowD.png"/>
+<img src="windowE.png"/>
