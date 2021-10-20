@@ -4,8 +4,8 @@ Simple tool to view kml/kmz files
 
 Это небольшая но весьма мощная утилита для просмотра kml и kmz файлов
 
-[KMZ Repository](https://github.com/dkxce/KMZ_FILES)     
-[KMZ Репозиторий](https://github.com/dkxce/KMZ_FILES)     
+[KMZ files Repository](https://github.com/dkxce/KMZ_FILES)     
+[Репозиторий KMZ файлов](https://github.com/dkxce/KMZ_FILES)     
 
 ---
 
@@ -15,7 +15,7 @@ Simple tool to view kml/kmz files
 Программа умеет отображать на карты объекты из
 KMZ, KML, GPS, Progorod, WPT, GDB, FIR файлов.
 
-Открывает файлы, сохраненные в Google Maps и SASPlanet.
+Открывает файлы, сохраненные в [Google Maps](https://www.google.com/maps/d/), [SASPlanet](http://www.sasgis.org/sasplaneta/) и [KMZRebuilder](https://github.com/dkxce/KMZRebuilder)
 Отображает вложенные в файл (kmz) картинки и картинки по url.
 Отсутствует прямое ограничение на количество отображаемых объектов.
 
