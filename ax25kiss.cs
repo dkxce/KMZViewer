@@ -338,6 +338,8 @@ namespace ax25kiss
             offset += 7;
 
             int repeaters = 0;
+            path = null;
+
             while (offset + 7 <= size && (packet[offset - 1] & 0x01) == 0)
             {
                 repeaters++;
