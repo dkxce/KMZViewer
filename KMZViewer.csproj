@@ -154,6 +154,7 @@
     <Compile Include="ReportForm.Designer.cs">
       <DependentUpon>ReportForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RouteClient.cs" />
     <Compile Include="SelectIcon.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +169,7 @@
     </Compile>
     <Compile Include="TNCState.cs" />
     <Compile Include="translit.cs" />
+    <Compile Include="WaitingForm.cs" />
     <Compile Include="WGSFormX.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +183,8 @@
     <None Include="aprs2nd.png" />
     <None Include="aprs1st.png" />
     <Content Include="butterfly.ico" />
+    <None Include="Resources\rFinish.png" />
+    <None Include="Resources\rStart.png" />
     <None Include="Resources\progorod19.png" />
     <None Include="Resources\progorod18.png" />
     <None Include="Resources\progorod17.png" />
