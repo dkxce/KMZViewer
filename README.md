@@ -26,7 +26,7 @@ KMZ, KML, GPS, Progorod, WPT, GDB, FIR файлов.
 Умеет сохранять данные в KMZ, CSV, HTML, RTF, WPT, Progorod
 
 Поддерживат поиск OSM (русский).     
-Поддерживает визуализацию маршрутов dkxce Route Engine.     
+Поддерживает визуализацию маршрутов dkxce Route Engine и OSRM.     
 
 Работает с OSM тайлами, Google, Ovi, Here, Kosmosnimki.
 Пожжерживат пользовательские тайлы.
