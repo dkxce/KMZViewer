@@ -1,6 +1,6 @@
 # KMZViewer
 
-Simple tool to view kml/kmz files
+Simple powerfull tool to view kml/kmz files
 
 Это небольшая но весьма мощная утилита для просмотра kml и kmz файлов
 
@@ -11,7 +11,7 @@ Simple tool to view kml/kmz files
 
 Это программа для просмотра POI на тайловых картах.     
 И она может работать с APRS пакетами! и данными FlightRadar24!    
-Поддерживает райстровые MBTiles файлы.  
+Поддерживает райстровые [MBTiles](https://wiki.openstreetmap.org/wiki/MBTiles) файлы.  
 
 Программа умеет отображать на карты объекты из
 KMZ, KML, GPS, Progorod, WPT, GDB, FIR файлов.
@@ -26,7 +26,7 @@ KMZ, KML, GPS, Progorod, WPT, GDB, FIR файлов.
 Умеет сохранять данные в KMZ, CSV, HTML, RTF, WPT, Progorod
 
 Поддерживат поиск OSM (русский).     
-Поддерживает визуализацию маршрутов dkxce Route Engine и OSRM.     
+Поддерживает визуализацию маршрутов dkxce Route Engine и [OSRM](http://project-osrm.org/docs/v5.15.2/api/).     
 
 Работает с OSM тайлами, Google, Ovi, Here, Kosmosnimki.
 Пожжерживат пользовательские тайлы.
