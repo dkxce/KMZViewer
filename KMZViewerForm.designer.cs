@@ -446,6 +446,8 @@ namespace KMZ_Viewer
             this.rtFinish = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel11 = new System.Windows.Forms.ToolStripStatusLabel();
             this.rbSet = new System.Windows.Forms.ToolStripSplitButton();
+            this.rOUTEENFINEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem35 = new System.Windows.Forms.ToolStripSeparator();
             this.setURLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -453,6 +455,8 @@ namespace KMZ_Viewer
             this.setColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.timeoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem34 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rbGet = new System.Windows.Forms.ToolStripSplitButton();
             this.rbClear = new System.Windows.Forms.ToolStripSplitButton();
@@ -461,8 +465,7 @@ namespace KMZ_Viewer
             this.toolStripStatusLabel12 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel13 = new System.Windows.Forms.ToolStripStatusLabel();
             this.rtStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.timeoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem34 = new System.Windows.Forms.ToolStripSeparator();
+            this.selectRouteServiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -3575,6 +3578,9 @@ namespace KMZ_Viewer
             // 
             this.rbSet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.rbSet.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rOUTEENFINEToolStripMenuItem,
+            this.selectRouteServiceToolStripMenuItem,
+            this.toolStripMenuItem35,
             this.setURLToolStripMenuItem,
             this.setKeyToolStripMenuItem,
             this.setToolStripMenuItem,
@@ -3591,6 +3597,20 @@ namespace KMZ_Viewer
             this.rbSet.Size = new System.Drawing.Size(43, 20);
             this.rbSet.Text = "УСТ";
             this.rbSet.ButtonClick += new System.EventHandler(this.rbSet_ButtonClick);
+            this.rbSet.DropDownOpening += new System.EventHandler(this.rbSet_DropDownOpening);
+            // 
+            // rOUTEENFINEToolStripMenuItem
+            // 
+            this.rOUTEENFINEToolStripMenuItem.Enabled = false;
+            this.rOUTEENFINEToolStripMenuItem.Name = "rOUTEENFINEToolStripMenuItem";
+            this.rOUTEENFINEToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.rOUTEENFINEToolStripMenuItem.Text = "ROUTE ENGINE";
+            this.rOUTEENFINEToolStripMenuItem.Click += new System.EventHandler(this.rOUTEENFINEToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem35
+            // 
+            this.toolStripMenuItem35.Name = "toolStripMenuItem35";
+            this.toolStripMenuItem35.Size = new System.Drawing.Size(249, 6);
             // 
             // setURLToolStripMenuItem
             // 
@@ -3636,6 +3656,18 @@ namespace KMZ_Viewer
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(249, 6);
+            // 
+            // timeoutToolStripMenuItem
+            // 
+            this.timeoutToolStripMenuItem.Name = "timeoutToolStripMenuItem";
+            this.timeoutToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.timeoutToolStripMenuItem.Text = "Таймаут получения маршрута ...";
+            this.timeoutToolStripMenuItem.Click += new System.EventHandler(this.timeoutToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem34
+            // 
+            this.toolStripMenuItem34.Name = "toolStripMenuItem34";
+            this.toolStripMenuItem34.Size = new System.Drawing.Size(249, 6);
             // 
             // aboutToolStripMenuItem
             // 
@@ -3701,17 +3733,12 @@ namespace KMZ_Viewer
             this.rtStatus.Size = new System.Drawing.Size(25, 17);
             this.rtStatus.Text = "Idle";
             // 
-            // timeoutToolStripMenuItem
+            // selectRouteServiceToolStripMenuItem
             // 
-            this.timeoutToolStripMenuItem.Name = "timeoutToolStripMenuItem";
-            this.timeoutToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-            this.timeoutToolStripMenuItem.Text = "Таймаут получения маршрута ...";
-            this.timeoutToolStripMenuItem.Click += new System.EventHandler(this.timeoutToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem34
-            // 
-            this.toolStripMenuItem34.Name = "toolStripMenuItem34";
-            this.toolStripMenuItem34.Size = new System.Drawing.Size(249, 6);
+            this.selectRouteServiceToolStripMenuItem.Name = "selectRouteServiceToolStripMenuItem";
+            this.selectRouteServiceToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.selectRouteServiceToolStripMenuItem.Text = "Выбрать маршрутный сервис ...";
+            this.selectRouteServiceToolStripMenuItem.Click += new System.EventHandler(this.selectRouteServiceToolStripMenuItem_Click);
             // 
             // KMZViewerForm
             // 
@@ -4145,5 +4172,8 @@ namespace KMZ_Viewer
         private System.Windows.Forms.ToolStripMenuItem showrouteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem timeoutToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem34;
+        private System.Windows.Forms.ToolStripMenuItem rOUTEENFINEToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem35;
+        private System.Windows.Forms.ToolStripMenuItem selectRouteServiceToolStripMenuItem;
     }
 }

@@ -6,17 +6,17 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #if NOFR24
-[assembly: AssemblyTitle("KMZ Viewer XP APRS/TNC")]
+[assembly: AssemblyTitle("KMZ Viewer XP APRS/TNC/RT")]
 #else
-[assembly: AssemblyTitle("KMZ Viewer XP FR24/APRS/TNC")]
+[assembly: AssemblyTitle("KMZ Viewer XP FR24/APRS/TNC/RT")]
 #endif
 [assembly: AssemblyDescription("View KML and KMZ files")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("milokz@gmail.com")]
 #if NOFR24
-[assembly: AssemblyProduct("KMZ Viewer XP APRS/TNC")]
+[assembly: AssemblyProduct("KMZ Viewer XP APRS/TNC/RT")]
 #else
-[assembly: AssemblyProduct("KMZ Viewer XP FR24/APRS/TNC")]
+[assembly: AssemblyProduct("KMZ Viewer XP FR24/APRS/TNC/RT")]
 #endif
 [assembly: AssemblyCopyright("Copyright © milokz@gmail.com 2022")]
 [assembly: AssemblyTrademark("")]
@@ -37,5 +37,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("22.1.10.107")]
-[assembly: AssemblyFileVersion("22.1.10.107")]
+[assembly: AssemblyVersion("22.1.13.109")]
+[assembly: AssemblyFileVersion("22.1.13.109")]
