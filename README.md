@@ -40,13 +40,20 @@ AGW, KISS TNС и отображать полученные объекты с к
 на карте (Beacon, WX, Point). Работает с Serial/COM Kiss.
 Есть возможность следить за объектом при его перемещении.
 
-<img src="window.png"/>
-<img src="kmzviewer_001.jpg"/>
-<img src="kmzviewer_002.jpg"/>
-<img src="windowA.png"/>
-<img src="windowB.png"/>
-<img src="windowC.png"/>
+Основное окно карты    
+<img src="window.png"/>    
+APRS данные    
+<img src="kmzviewer_001.jpg"/>     
+<img src="kmzviewer_002.jpg"/>     
+FlightRadar24 данные     
+<img src="windowA.png"/>    
+<img src="windowB.png"/>     
+Просмотр точек вдоль маршрута    
+<img src="windowC.png"/>    
+Отображение данных карты     
 <img src="windowD.png"/>
-<img src="windowE.png"/>
-<img src="windowF.png"/>
-<img src="windowG.png"/>
+<img src="windowE.png"/>     
+Экспорт данных     
+<img src="windowF.png"/>      
+Маршруты     
+<img src="windowG.png"/>     
