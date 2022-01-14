@@ -438,6 +438,7 @@ namespace KMZ_Viewer
             this.rbStFi = new System.Windows.Forms.ToolStripMenuItem();
             this.rbSt = new System.Windows.Forms.ToolStripMenuItem();
             this.rbFi = new System.Windows.Forms.ToolStripMenuItem();
+            this.rbMi = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.rbGR = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusLabel10 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -3489,6 +3490,7 @@ namespace KMZ_Viewer
             this.rbStFi,
             this.rbSt,
             this.rbFi,
+            this.rbMi,
             this.toolStripSeparator1,
             this.rbGR});
             this.oncb.Image = ((System.Drawing.Image)(resources.GetObject("oncb.Image")));
@@ -3502,40 +3504,47 @@ namespace KMZ_Viewer
             this.rbDN.Checked = true;
             this.rbDN.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rbDN.Name = "rbDN";
-            this.rbDN.Size = new System.Drawing.Size(197, 22);
+            this.rbDN.Size = new System.Drawing.Size(276, 22);
             this.rbDN.Text = "Ничего не делать";
             this.rbDN.Click += new System.EventHandler(this.rbDN_Click);
             // 
             // rbStFi
             // 
             this.rbStFi.Name = "rbStFi";
-            this.rbStFi.Size = new System.Drawing.Size(197, 22);
+            this.rbStFi.Size = new System.Drawing.Size(276, 22);
             this.rbStFi.Text = "Назначить Start/Finish";
             this.rbStFi.Click += new System.EventHandler(this.rbStFi_Click);
             // 
             // rbSt
             // 
             this.rbSt.Name = "rbSt";
-            this.rbSt.Size = new System.Drawing.Size(197, 22);
+            this.rbSt.Size = new System.Drawing.Size(276, 22);
             this.rbSt.Text = "Назначить Start";
             this.rbSt.Click += new System.EventHandler(this.rbSt_Click);
             // 
             // rbFi
             // 
             this.rbFi.Name = "rbFi";
-            this.rbFi.Size = new System.Drawing.Size(197, 22);
+            this.rbFi.Size = new System.Drawing.Size(276, 22);
             this.rbFi.Text = "Назначить Finish";
             this.rbFi.Click += new System.EventHandler(this.rbFi_Click);
+            // 
+            // rbMi
+            // 
+            this.rbMi.Name = "rbMi";
+            this.rbMi.Size = new System.Drawing.Size(276, 22);
+            this.rbMi.Text = "Поставить точку сложного маршрута";
+            this.rbMi.Click += new System.EventHandler(this.rbMi_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(194, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(273, 6);
             // 
             // rbGR
             // 
             this.rbGR.Name = "rbGR";
-            this.rbGR.Size = new System.Drawing.Size(197, 22);
+            this.rbGR.Size = new System.Drawing.Size(276, 22);
             this.rbGR.Text = "Запросить маршрут";
             this.rbGR.Click += new System.EventHandler(this.rbGR_Click);
             // 
@@ -4191,5 +4200,6 @@ namespace KMZ_Viewer
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem35;
         private System.Windows.Forms.ToolStripMenuItem selectRouteServiceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makerout;
+        private System.Windows.Forms.ToolStripMenuItem rbMi;
     }
 }
