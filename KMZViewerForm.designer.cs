@@ -447,6 +447,7 @@ namespace KMZ_Viewer
             this.toolStripStatusLabel11 = new System.Windows.Forms.ToolStripStatusLabel();
             this.rbSet = new System.Windows.Forms.ToolStripSplitButton();
             this.rOUTEENFINEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectRouteServiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem35 = new System.Windows.Forms.ToolStripSeparator();
             this.setURLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setKeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -459,13 +460,13 @@ namespace KMZ_Viewer
             this.toolStripMenuItem34 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rbGet = new System.Windows.Forms.ToolStripSplitButton();
+            this.makerout = new System.Windows.Forms.ToolStripMenuItem();
             this.rbClear = new System.Windows.Forms.ToolStripSplitButton();
             this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearWayOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripStatusLabel12 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel13 = new System.Windows.Forms.ToolStripStatusLabel();
             this.rtStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.selectRouteServiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -3603,89 +3604,108 @@ namespace KMZ_Viewer
             // 
             this.rOUTEENFINEToolStripMenuItem.Enabled = false;
             this.rOUTEENFINEToolStripMenuItem.Name = "rOUTEENFINEToolStripMenuItem";
-            this.rOUTEENFINEToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.rOUTEENFINEToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.rOUTEENFINEToolStripMenuItem.Text = "ROUTE ENGINE";
             this.rOUTEENFINEToolStripMenuItem.Click += new System.EventHandler(this.rOUTEENFINEToolStripMenuItem_Click);
+            // 
+            // selectRouteServiceToolStripMenuItem
+            // 
+            this.selectRouteServiceToolStripMenuItem.Name = "selectRouteServiceToolStripMenuItem";
+            this.selectRouteServiceToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F6)));
+            this.selectRouteServiceToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
+            this.selectRouteServiceToolStripMenuItem.Text = "Выбрать маршрутный сервис ...";
+            this.selectRouteServiceToolStripMenuItem.Click += new System.EventHandler(this.selectRouteServiceToolStripMenuItem_Click);
             // 
             // toolStripMenuItem35
             // 
             this.toolStripMenuItem35.Name = "toolStripMenuItem35";
-            this.toolStripMenuItem35.Size = new System.Drawing.Size(249, 6);
+            this.toolStripMenuItem35.Size = new System.Drawing.Size(285, 6);
             // 
             // setURLToolStripMenuItem
             // 
             this.setURLToolStripMenuItem.Name = "setURLToolStripMenuItem";
-            this.setURLToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.setURLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
+                        | System.Windows.Forms.Keys.F6)));
+            this.setURLToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.setURLToolStripMenuItem.Text = "Изменить URL ...";
             this.setURLToolStripMenuItem.Click += new System.EventHandler(this.setURLToolStripMenuItem_Click);
             // 
             // setKeyToolStripMenuItem
             // 
             this.setKeyToolStripMenuItem.Name = "setKeyToolStripMenuItem";
-            this.setKeyToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.setKeyToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.setKeyToolStripMenuItem.Text = "Изменить Key ...";
             this.setKeyToolStripMenuItem.Click += new System.EventHandler(this.setKeyToolStripMenuItem_Click);
             // 
             // setToolStripMenuItem
             // 
             this.setToolStripMenuItem.Name = "setToolStripMenuItem";
-            this.setToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.setToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.setToolStripMenuItem.Text = "Изменить RA ...";
             this.setToolStripMenuItem.Click += new System.EventHandler(this.setToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(249, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(285, 6);
             // 
             // setColorToolStripMenuItem
             // 
             this.setColorToolStripMenuItem.Name = "setColorToolStripMenuItem";
-            this.setColorToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.setColorToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.setColorToolStripMenuItem.Text = "Изменить цвет ...";
             this.setColorToolStripMenuItem.Click += new System.EventHandler(this.setColorToolStripMenuItem_Click);
             // 
             // setWidthToolStripMenuItem
             // 
             this.setWidthToolStripMenuItem.Name = "setWidthToolStripMenuItem";
-            this.setWidthToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.setWidthToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.setWidthToolStripMenuItem.Text = "Изменить толщину ...";
             this.setWidthToolStripMenuItem.Click += new System.EventHandler(this.setWidthToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(249, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(285, 6);
             // 
             // timeoutToolStripMenuItem
             // 
             this.timeoutToolStripMenuItem.Name = "timeoutToolStripMenuItem";
-            this.timeoutToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.timeoutToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.timeoutToolStripMenuItem.Text = "Таймаут получения маршрута ...";
             this.timeoutToolStripMenuItem.Click += new System.EventHandler(this.timeoutToolStripMenuItem_Click);
             // 
             // toolStripMenuItem34
             // 
             this.toolStripMenuItem34.Name = "toolStripMenuItem34";
-            this.toolStripMenuItem34.Size = new System.Drawing.Size(249, 6);
+            this.toolStripMenuItem34.Size = new System.Drawing.Size(285, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
             this.aboutToolStripMenuItem.Text = "О маршрутах ...";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // rbGet
             // 
             this.rbGet.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.rbGet.DropDownButtonWidth = 0;
+            this.rbGet.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.makerout});
             this.rbGet.Image = ((System.Drawing.Image)(resources.GetObject("rbGet.Image")));
             this.rbGet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.rbGet.Name = "rbGet";
-            this.rbGet.Size = new System.Drawing.Size(66, 20);
+            this.rbGet.Size = new System.Drawing.Size(77, 20);
             this.rbGet.Text = "Построить";
             this.rbGet.ButtonClick += new System.EventHandler(this.rbGet_ButtonClick);
+            // 
+            // makerout
+            // 
+            this.makerout.Name = "makerout";
+            this.makerout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.R)));
+            this.makerout.Size = new System.Drawing.Size(221, 22);
+            this.makerout.Text = "Построить маршрут";
+            this.makerout.Click += new System.EventHandler(this.makerout_Click);
             // 
             // rbClear
             // 
@@ -3703,14 +3723,16 @@ namespace KMZ_Viewer
             // clearAllToolStripMenuItem
             // 
             this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
-            this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.clearAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
+            this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.clearAllToolStripMenuItem.Text = "Очистить все";
             this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.clearAllToolStripMenuItem_Click);
             // 
             // clearWayOnlyToolStripMenuItem
             // 
             this.clearWayOnlyToolStripMenuItem.Name = "clearWayOnlyToolStripMenuItem";
-            this.clearWayOnlyToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.clearWayOnlyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.W)));
+            this.clearWayOnlyToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.clearWayOnlyToolStripMenuItem.Text = "Очистить путь";
             this.clearWayOnlyToolStripMenuItem.Click += new System.EventHandler(this.clearWayOnlyToolStripMenuItem_Click);
             // 
@@ -3732,13 +3754,6 @@ namespace KMZ_Viewer
             this.rtStatus.Name = "rtStatus";
             this.rtStatus.Size = new System.Drawing.Size(25, 17);
             this.rtStatus.Text = "Idle";
-            // 
-            // selectRouteServiceToolStripMenuItem
-            // 
-            this.selectRouteServiceToolStripMenuItem.Name = "selectRouteServiceToolStripMenuItem";
-            this.selectRouteServiceToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-            this.selectRouteServiceToolStripMenuItem.Text = "Выбрать маршрутный сервис ...";
-            this.selectRouteServiceToolStripMenuItem.Click += new System.EventHandler(this.selectRouteServiceToolStripMenuItem_Click);
             // 
             // KMZViewerForm
             // 
@@ -4175,5 +4190,6 @@ namespace KMZ_Viewer
         private System.Windows.Forms.ToolStripMenuItem rOUTEENFINEToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem35;
         private System.Windows.Forms.ToolStripMenuItem selectRouteServiceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makerout;
     }
 }
