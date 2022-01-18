@@ -85,7 +85,7 @@
     <Compile Include="LatLonParser.cs" />
     <Compile Include="MruList.cs" />
     <Compile Include="MultiPointRouteForm.cs">
-      <SubType>Form</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MultiPointRouteForm.designer.cs">
       <DependentUpon>MultiPointRouteForm.cs</DependentUpon>
