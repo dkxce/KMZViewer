@@ -13,8 +13,8 @@ Simple powerfull tool to view kml/kmz files
 И она может работать с APRS пакетами! и данными FlightRadar24!    
 Поддерживает райстровые [MBTiles](https://wiki.openstreetmap.org/wiki/MBTiles) файлы.  
 
-Программа умеет отображать на карты объекты из
-KMZ, KML, GPS, Progorod, WPT, GDB, FIR файлов.
+Программа умеет отображать на карты объекты из:    
+**KMZ**, **KML**, **GPI** (Garmin Points of Interests), **Progorod**, **WPT**, **GDB**, **FIR** файлов.
 
 Открывает файлы, сохраненные в [Google Maps](https://www.google.com/maps/d/), [SASPlanet](http://www.sasgis.org/sasplaneta/) и [KMZRebuilder](https://github.com/dkxce/KMZRebuilder)
 Отображает вложенные в файл (kmz) картинки и картинки по url.
