@@ -468,6 +468,8 @@ namespace KMZ_Viewer
             this.toolStripStatusLabel12 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel13 = new System.Windows.Forms.ToolStripStatusLabel();
             this.rtStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripMenuItem36 = new System.Windows.Forms.ToolStripSeparator();
+            this.propsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -541,6 +543,8 @@ namespace KMZ_Viewer
             this.openPlugInsToolStripMenuItem,
             this.pofiles,
             this.ñîõðàíèòüÑëîèÂÔàéëToolStripMenuItem,
+            this.toolStripMenuItem36,
+            this.propsToolStripMenuItem,
             this.toolStripMenuItem2,
             this.showrouteToolStripMenuItem,
             this.sPVToolStripMenuItem,
@@ -704,7 +708,7 @@ namespace KMZ_Viewer
             this.toolStripStatusLabel1.BackColor = System.Drawing.Color.Navy;
             this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.Silver;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(392, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(361, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -3764,6 +3768,18 @@ namespace KMZ_Viewer
             this.rtStatus.Size = new System.Drawing.Size(25, 17);
             this.rtStatus.Text = "Idle";
             // 
+            // toolStripMenuItem36
+            // 
+            this.toolStripMenuItem36.Name = "toolStripMenuItem36";
+            this.toolStripMenuItem36.Size = new System.Drawing.Size(263, 6);
+            // 
+            // propsToolStripMenuItem
+            // 
+            this.propsToolStripMenuItem.Name = "propsToolStripMenuItem";
+            this.propsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.propsToolStripMenuItem.Text = "Ïðåäïî÷òåíèÿ...";
+            this.propsToolStripMenuItem.Click += new System.EventHandler(this.propsToolStripMenuItem_Click);
+            // 
             // KMZViewerForm
             // 
             this.AllowDrop = true;
@@ -4201,5 +4217,7 @@ namespace KMZ_Viewer
         private System.Windows.Forms.ToolStripMenuItem selectRouteServiceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makerout;
         private System.Windows.Forms.ToolStripMenuItem rbMi;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem36;
+        private System.Windows.Forms.ToolStripMenuItem propsToolStripMenuItem;
     }
 }

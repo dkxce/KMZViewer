@@ -72,6 +72,7 @@
     <Compile Include="fit_FastCrc.cs" />
     <Compile Include="fit_Parser.cs" />
     <Compile Include="FlightRadar24GW.cs" />
+    <Compile Include="GPIReader.cs" />
     <Compile Include="InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -92,6 +93,7 @@
     </Compile>
     <Compile Include="NavitelGDB.cs" />
     <Compile Include="PolyLineBufferSimp.cs" />
+    <Compile Include="Preferences.cs" />
     <Compile Include="ProcessingForm.cs">
       <SubType>Form</SubType>
     </Compile>
