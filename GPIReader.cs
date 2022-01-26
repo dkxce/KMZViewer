@@ -1466,4 +1466,6 @@ namespace KMZ_Viewer
             return Color.FromArgb((int)((value >> 0) & 0xFF), (int)((value >> 8) & 0xFF), (int)((value >> 16) & 0xFF));
         }
     }
+
+    /* See KMZRebuilder to GPIWriter */
 }
