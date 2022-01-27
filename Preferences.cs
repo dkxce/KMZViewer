@@ -10,11 +10,14 @@ using System.Windows.Forms;
 namespace KMZ_Viewer
 {
     [Serializable]
-    public class Preferences: KMZ_Viewer.XMLSaved<Preferences>
+    public class Preferences : XMLSaved<Preferences>
     {
         [XmlArray("configuration")]
         [XmlArrayItem("property")]
         public List<Property> Properties;
+
+        [XmlIgnore]
+        private bool DefaultsIsLoaded = false;
 
         [XmlIgnore]
         public string this[string name]
@@ -41,30 +44,57 @@ namespace KMZ_Viewer
             }
         }
 
+        public bool GetBoolValue(string name)
+        {
+            LoadDefaults();
+            if (Properties.Count == 0) return false;
+            foreach (Property prop in Properties)
+                if (prop.name == name)
+                {
+                    string pv = prop.value;
+                    if (String.IsNullOrEmpty(pv)) return false;
+                    pv = pv.ToLower();
+                    return (pv == "1") || (pv == "yes") || (pv == "true");
+                };
+            return false;
+        }
+
         private void LoadDefaults()
         {
+            if (DefaultsIsLoaded) return;
             if (Properties == null)
             {
                 Properties = new List<Property>();
                 this["gpi_localization"] = "EN";
             };
+            //if (!this.Contains("gpiwriter_set_descriptions")) Properties.Add(new Property("gpiwriter_set_descriptions", "yes"));
+            DefaultsIsLoaded = true;
+        }
+
+        private bool Contains(string name)
+        {
+            foreach (Property prop in Properties)
+                if (prop.name == name) return true;
+            return false;
         }
 
         public static Preferences Load()
         {
-            string fName = KMZ_Viewer.KMZViewerForm.CurrentDirectory() + @"\KMZViewer.config";
+            string fName = KMZViewerForm.CurrentDirectory() + @"\KMZViewer.config";
             if (File.Exists(fName))
             {
-                try { return Preferences.Load(fName); } catch { };
+                try { return Preferences.Load(fName); }
+                catch { };
             };
             return new Preferences();
         }
 
         public void Save()
         {
-            string fName = KMZ_Viewer.KMZViewerForm.CurrentDirectory() + @"\KMZViewer.config";
+            string fName = KMZViewerForm.CurrentDirectory() + @"\KMZViewer.config";
             this.LoadDefaults();
-            try { Preferences.Save(fName, this); } catch { };
+            try { Preferences.Save(fName, this); }
+            catch { };
         }
 
         [Serializable]
@@ -95,11 +125,11 @@ namespace KMZ_Viewer
             form.ShowInTaskbar = false;
             form.Width = 400;
             form.Height = 380;
-            form.Text = "Предпочтения";
+            form.Text = "Preferences";
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
             Label lab = new Label();
             form.Controls.Add(lab);
-            lab.Text = "Двойной клик на параметре или пробел чтобы изменить:";
+            lab.Text = "Double click on item or press Space to edit/change value:";
             lab.AutoSize = true;
             lab.Left = 8;
             lab.Top = 5;
@@ -119,7 +149,7 @@ namespace KMZ_Viewer
             okbtn.Top = lb.Top + lb.Height + 6;
             okbtn.Text = "OK";
             okbtn.Click += (delegate(object sender, EventArgs e) { form.Close(); });
-            form.ShowDialog();            
+            form.ShowDialog();
             form.Dispose();
         }
 
@@ -130,7 +160,7 @@ namespace KMZ_Viewer
             {
                 Property p = (Property)lb.Items[si];
                 string nval = p.value;
-                if (InputBox.Show("Изменить параметр", p.name + ":", ref nval) == DialogResult.OK)
+                if (InputBox.Show("Edit value", p.name + ":", ref nval) == DialogResult.OK)
                 {
                     p.value = nval.Trim();
                     this[p.name] = p.value;

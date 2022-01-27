@@ -630,6 +630,7 @@ namespace KMZ_Viewer
     {
         public static string LOCALE_LANGUAGE = "EN"; // 2-SYMBOLS
         public static string DEFAULT_LANGUAGE = "EN"; // 2-SYMBOLS
+        public static bool SAVE_MEDIA = false;
 
         private string fileName;
         public string FileName { get { return fileName; } }
@@ -648,6 +649,7 @@ namespace KMZ_Viewer
 
         public Dictionary<ushort, RecCategory> Categories = new Dictionary<ushort, RecCategory>();
         public Dictionary<ushort, RecBitmap> Bitmaps = new Dictionary<ushort, RecBitmap>();
+        public Dictionary<ushort, RecMedia> Medias = new Dictionary<ushort, RecMedia>();
 
         public string DataSource
         {
@@ -698,6 +700,7 @@ namespace KMZ_Viewer
             sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             sw.WriteLine("<kml><Document>");
             string caption = (String.IsNullOrEmpty(this.Name) ? "GPI Has No Name" : this.Name);
+            if (!String.IsNullOrEmpty(this.DataSource)) caption = this.DataSource;
             sw.WriteLine("<name><![CDATA[" + caption + "]]></name><createdby>KMZ Rebuilder GPI Reader</createdby>");
             string desc = "Created: " + this.Created.ToString() + "\r\n";
             foreach (KeyValuePair<string, string> langval in this.cDataSource)
@@ -718,9 +721,12 @@ namespace KMZ_Viewer
                 desc += "Objects: " + kCat.Value.Waypoints.Count.ToString() + "\r\n";
                 foreach (KeyValuePair<string, string> langval in kCat.Value.Category)
                     desc += String.Format("name:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                if (kCat.Value.Description != null)
+                if ((kCat.Value.Description != null) && (kCat.Value.Description.Description.Count > 0))
+                {
+                    desc += "\r\n";
                     foreach (KeyValuePair<string, string> langval in kCat.Value.Description.Description)
-                        desc += String.Format("desc:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
+                        desc += String.Format("desc:{0}={1}\r\n\r\n", langval.Key.ToLower(), TrimDesc(langval.Value));
+                };
                 if (kCat.Value.Comment != null)
                     foreach (KeyValuePair<string, string> langval in kCat.Value.Comment.Comment)
                         desc += String.Format("comm:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
@@ -745,9 +751,12 @@ namespace KMZ_Viewer
                     string text = "";
                     foreach (KeyValuePair<string, string> langval in wp.ShortName)
                         text += String.Format("name:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                    if (wp.Description != null)
+                    if ((wp.Description != null) && (wp.Description.Description.Count > 0))
+                    {
+                        text += "\r\n";
                         foreach (KeyValuePair<string, string> langval in wp.Description.Description)
-                            text += String.Format("desc:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
+                            text += String.Format("desc:{0}={1}\r\n\r\n", langval.Key.ToLower(), TrimDesc(langval.Value));
+                    };
                     if (wp.Comment != null)
                         foreach (KeyValuePair<string, string> langval in wp.Comment.Comment)
                             text += String.Format("comm:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
@@ -785,6 +794,19 @@ namespace KMZ_Viewer
                         text += String.Format("alert_speed={0}\r\n", wp.Alert.Speed);
                         text += String.Format("alert_ison={0}\r\n", wp.Alert.Alert);
                         text += String.Format("alert_type={0}\r\n", wp.Alert.IsType);
+                        if (SAVE_MEDIA)
+                        {
+                            ushort sn = (ushort)(wp.Alert.SoundNumber + (wp.Alert.AudioAlert << 8));
+                            if (Medias.ContainsKey(sn))
+                            {
+                                string ext = "bin";
+                                if (Medias[sn].Format == 0) ext = "wav";
+                                if (Medias[sn].Format == 1) ext = "mp3";
+                                string fName = String.Format("{0}-{1}.{2}", Medias[sn].MediaID, Medias[sn].Content[0].Key, ext);
+                                text += String.Format("alert_sound=media/{0}\r\n", fName);
+                            };
+                        };
+
                     };
                     if (wp.Bitmap != null) style = "imgid" + wp.Bitmap.BitmapID.ToString();
                     if ((wp.Image != null) && (wp.Image.Length > 0))
@@ -893,9 +915,34 @@ namespace KMZ_Viewer
                     };
                 };
             };
+            if (SAVE_MEDIA && (Medias.Count > 0))
+            {
+                string medias_file_dir = Path.GetDirectoryName(fileName) + @"\media\";
+                Directory.CreateDirectory(medias_file_dir);
+                foreach (KeyValuePair<ushort, RecMedia> rm in Medias)
+                {
+                    for (int i = 0; i < rm.Value.Content.Count; i++)
+                    {
+                        string ext = "bin";
+                        if (rm.Value.Format == 0) ext = "wav";
+                        if (rm.Value.Format == 1) ext = "mp3";
+                        string fName = String.Format("{0}{1}-{2}.{3}", medias_file_dir, rm.Value.MediaID, rm.Value.Content[i].Key, ext);
+                        FileStream fsw = new FileStream(fName, FileMode.Create, FileAccess.Write);
+                        fsw.Write(rm.Value.Content[i].Value, 0, rm.Value.Content[i].Value.Length);
+                        fsw.Close();
+                    };
+                };
+            };
             sw.WriteLine("</Document></kml>");
             sw.Close();
             fs.Close();
+        }
+
+        private string TrimDesc(string text)
+        {
+            while (text.IndexOf("\r\n\r\n") >= 0) text = text.Replace("\r\n\r\n", "");
+            text = text.Trim(new char[] { '\r', '\n' });
+            return text;
         }
 
         private void LoopRecords(List<Record> records)
@@ -1412,17 +1459,18 @@ namespace KMZ_Viewer
             rec.Format = rec.MainData[2];
             try
             {
-                int offset = 3;
+                int offset = 0;
                 int readed = 0;
-                uint len = BitConverter.ToUInt32(rec.MainData, offset); offset += 4;
+                uint len = BitConverter.ToUInt32(rec.ExtraData, offset); offset += 4;
                 while (readed < len)
                 {
-                    string lang = Encoding.ASCII.GetString(rec.MainData, offset, 2); offset += 2; readed += 2;
-                    uint mlen = BitConverter.ToUInt32(rec.MainData, offset); offset += 4; readed += 4;
+                    string lang = Encoding.ASCII.GetString(rec.ExtraData, offset, 2); offset += 2; readed += 2;
+                    uint mlen = BitConverter.ToUInt32(rec.ExtraData, offset); offset += 4; readed += 4;
                     byte[] media = new byte[mlen];
-                    Array.Copy(rec.MainData, offset, media, 0, mlen);
+                    Array.Copy(rec.ExtraData, offset, media, 0, mlen); offset += (int)mlen; readed += (int)mlen;
                     rec.Content.Add(new KeyValuePair<string, byte[]>(lang, media));
                 };
+                Medias.Add(rec.MediaID, rec);
             }
             catch (Exception ex)
             {
