@@ -36,6 +36,18 @@ Simple powerfull tool to view kml/kmz files
 Умеет работать с кэшем SAS.Планета.
 Умеет работать с тайлами, сохранеными на диске.
 
+**Полноценная поддержка GPI файлов**:
+- Multilanguage (EN or any latin, RU or anty ciryllic)
+- Категории объектов (Layers (Categories))
+- Точки интересов (POI)
+- Примечания (POI Description)
+- Комментарии (POI Comment (load/save from/to desc))
+- Адресная информация (POI Address (load/save from/to desc))
+- Контактная информация (POI Contact (load/save from/to desc))
+- Предупреждения (POI Alert (load/save from/to desc)) со звуками
+- Иконки (POI Bitmap (get/set from/to kml style))
+- Картинки (POI Image (get/set from/to kml style))
+
 Позволяет отображать объекты, полученные через APRS.
 С помощью программы можно подключиться к APRS-IS,
 AGW, KISS TNС и отображать полученные объекты с координатами
