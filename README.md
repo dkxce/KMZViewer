@@ -71,3 +71,5 @@ FlightRadar24 данные
 <img src="windowF.png"/>      
 Маршруты     
 <img src="windowG.png"/>     
+Предпочтения     
+<img src="window_pref.png"/>     
