@@ -20,7 +20,7 @@ using System.Text;
 namespace KMZ_Viewer
 {
     #region RECTYPES
-    public enum RecType: ushort
+    public enum RecType : ushort
     {
         Header0 = 0,
         Header1 = 1,
@@ -37,8 +37,8 @@ namespace KMZ_Viewer
         Contact = 12,
         Image = 13,
         Description = 14,
-        Unknown15 = 15,
-        Unknown16 = 16,
+        ProductInfo = 15,
+        AlertCircle = 16,
         Copyright = 17,
         Media = 18,
         SpeedCamera = 19,
@@ -60,7 +60,7 @@ namespace KMZ_Viewer
         public static bool IsDefined(T value)
         {
             return Enum.IsDefined(typeof(T), value);
-        }       
+        }
     }
 
     public class Record
@@ -93,7 +93,7 @@ namespace KMZ_Viewer
         {
             Record res = null;
             if (RecordType == 0) res = new RecHeader0(parent);
-            if (RecordType == 1) res = new RecHeader1(parent);            
+            if (RecordType == 1) res = new RecHeader1(parent);
             if (RecordType == 2) res = new RecWaypoint(parent);
             if (RecordType == 3) res = new RecAlert(parent);
             if (RecordType == 4) res = new RecBitmapReference(parent);
@@ -107,13 +107,15 @@ namespace KMZ_Viewer
             if (RecordType == 12) res = new RecContact(parent);
             if (RecordType == 13) res = new RecImage(parent);
             if (RecordType == 14) res = new RecDescription(parent);
+            if (RecordType == 15) res = new RecProductInfo(parent);
+            if (RecordType == 16) res = new RecAlertCircle(parent);
             if (RecordType == 17) res = new RecCopyright(parent);
             if (RecordType == 18) res = new RecMedia(parent);
             if (RecordType == 19) res = new RecSpeedCamera(parent);
             if (RecordType == 0xFFFF) res = new RecEnd(parent);
             if (res == null) res = new Record(parent);
             res.RType = RecordType;
-            return res;            
+            return res;
         }
 
         public override string ToString()
@@ -142,7 +144,8 @@ namespace KMZ_Viewer
         {
             get
             {
-                try { return Encoding.GetEncoding(CodePage); } catch { };
+                try { return Encoding.GetEncoding(CodePage); }
+                catch { };
                 return Encoding.Unicode;
             }
         }
@@ -176,12 +179,12 @@ namespace KMZ_Viewer
 
         public RecAlert Alert;
         public RecBitmap Bitmap;
-        public RecImage Image;        
+        public RecImage Image;
 
         public RecDescription Description;
         public RecComment Comment;
         public RecContact Contact;
-        public RecAddress Address;      
+        public RecAddress Address;
     }
 
     // 3
@@ -196,12 +199,17 @@ namespace KMZ_Viewer
         public byte SoundNumber;
         public byte AudioAlert;
         public bool IsOn { get { return Alert == 1; } }
-        public string IsType { get {
-            if (AlertType == 0) return "proximity";
-            if (AlertType == 1) return "along_road";
-            if (AlertType == 2) return "toure_guide";
-            return AlertType.ToString();
-        } }
+        public string IsType
+        {
+            get
+            {
+                if (AlertType == 0) return "proximity";
+                if (AlertType == 1) return "along_road";
+                if (AlertType == 2) return "toure_guide";
+                return AlertType.ToString();
+            }
+        }
+        public RecAlertCircle AlertCircles;
     }
 
     // 4
@@ -243,7 +251,7 @@ namespace KMZ_Viewer
     {
         public RecCategory(Record parent) : base(parent) { }
         public ushort CategoryID;
-        public List<KeyValuePair<string, string>> Category = new List<KeyValuePair<string, string>>();        
+        public List<KeyValuePair<string, string>> Category = new List<KeyValuePair<string, string>>();
         public string Name
         {
             get
@@ -279,7 +287,7 @@ namespace KMZ_Viewer
         public double MaxLat { get { return (double)cMaxLat * 360.0 / Math.Pow(2, 32); } }
         public double MaxLon { get { return (double)cMaxLon * 360.0 / Math.Pow(2, 32); } }
         public double MinLat { get { return (double)cMinLat * 360.0 / Math.Pow(2, 32); } }
-        public double MinLon { get { return (double)cMinLon * 360.0 / Math.Pow(2, 32); } }        
+        public double MinLon { get { return (double)cMinLon * 360.0 / Math.Pow(2, 32); } }
     }
 
     // 9
@@ -410,91 +418,11 @@ namespace KMZ_Viewer
     {
         public RecContact(Record parent) : base(parent) { }
         public ushort Flags;
-        public List<KeyValuePair<string, string>> cPhone = new List<KeyValuePair<string, string>>();
-        public List<KeyValuePair<string, string>> cPhone2 = new List<KeyValuePair<string, string>>();
-        public List<KeyValuePair<string, string>> cFax = new List<KeyValuePair<string, string>>();
-        public List<KeyValuePair<string, string>> cEmail = new List<KeyValuePair<string, string>>();
-        public List<KeyValuePair<string, string>> cWeb = new List<KeyValuePair<string, string>>();
-
-        public string Phone
-        {
-            get
-            {
-                foreach (KeyValuePair<string, string> kvp in cPhone)
-                    if (kvp.Key == GPIReader.LOCALE_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cPhone)
-                    if (kvp.Key == GPIReader.DEFAULT_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cPhone)
-                    return kvp.Value;
-                return null;
-            }
-        }
-
-        public string Phone2
-        {
-            get
-            {
-                foreach (KeyValuePair<string, string> kvp in cPhone2)
-                    if (kvp.Key == GPIReader.LOCALE_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cPhone2)
-                    if (kvp.Key == GPIReader.DEFAULT_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cPhone2)
-                    return kvp.Value;
-                return null;
-            }
-        }
-
-        public string Fax
-        {
-            get
-            {
-                foreach (KeyValuePair<string, string> kvp in cFax)
-                    if (kvp.Key == GPIReader.LOCALE_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cFax)
-                    if (kvp.Key == GPIReader.DEFAULT_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cFax)
-                    return kvp.Value;
-                return null;
-            }
-        }
-
-        public string Email
-        {
-            get
-            {
-                foreach (KeyValuePair<string, string> kvp in cEmail)
-                    if (kvp.Key == GPIReader.LOCALE_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cEmail)
-                    if (kvp.Key == GPIReader.DEFAULT_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cEmail)
-                    return kvp.Value;
-                return null;
-            }
-        }
-
-        public string Web
-        {
-            get
-            {
-                foreach (KeyValuePair<string, string> kvp in cWeb)
-                    if (kvp.Key == GPIReader.LOCALE_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cWeb)
-                    if (kvp.Key == GPIReader.DEFAULT_LANGUAGE)
-                        return kvp.Value;
-                foreach (KeyValuePair<string, string> kvp in cWeb)
-                    return kvp.Value;
-                return null;
-            }
-        }
+        public string Phone;
+        public string Phone2;
+        public string Fax;
+        public string Email;
+        public string Web;
     }
 
     // 13
@@ -526,7 +454,27 @@ namespace KMZ_Viewer
                 return null;
             }
         }
-    }   
+    }
+
+    // 15
+    public class RecProductInfo : Record
+    {
+        public RecProductInfo(Record parent) : base(parent) { }
+        public ushort FactoryID;
+        public byte ProductID;
+        public byte RegionID;
+        public byte VendorID;
+    }
+
+    // 16
+    public class RecAlertCircle : Record
+    {
+        public RecAlertCircle(Record parent) : base(parent) { }
+        public ushort Count;
+        public double[] lat;
+        public double[] lon;
+        public uint[] radius;
+    }
 
     // 17
     public class RecCopyright : Record
@@ -622,35 +570,94 @@ namespace KMZ_Viewer
     }
     #endregion RECTYPES
 
-
     /// <summary>
     ///     GPI Reader
     /// </summary>
     public class GPIReader
     {
+        /// <summary>
+        ///     Current Locale Language ISO-639
+        /// </summary>
         public static string LOCALE_LANGUAGE = "EN"; // 2-SYMBOLS
+        /// <summary>
+        ///     Default Language ISO-639
+        /// </summary>
         public static string DEFAULT_LANGUAGE = "EN"; // 2-SYMBOLS
+        /// <summary>
+        ///     Save Media Content to disk
+        /// </summary>
         public static bool SAVE_MEDIA = false;
+        /// <summary>
+        ///     Set kmz poi image from jpeg (not bitmap); false - from bitmap; true - from image (if specified)
+        /// </summary>
+        public static bool POI_IMAGE_FROM_JPEG = false; // bitmap o
 
-        private string fileName;
+        /// <summary>
+        ///     Source File Name
+        /// </summary>
         public string FileName { get { return fileName; } }
+        private string fileName;
 
+        /// <summary>
+        ///     Public GPI Root Element
+        /// </summary>
         public Record RootElement = new Record(null);
 
+        /// <summary>
+        ///     GPI File Document Name
+        /// </summary>
         public string Content = null;
+        /// <summary>
+        ///     GPI Text CodePage
+        /// </summary>
         public ushort CodePage = 0xFDE9;
+        /// <summary>
+        ///     GPI Text Encoding
+        /// </summary>
         public Encoding Encoding = Encoding.Unicode;
+        /// <summary>
+        ///     GPI File Header Text
+        /// </summary>
         public string Header = null;
+        /// <summary>
+        ///     GPI File Version
+        /// </summary>
         public string Version = null;
+        /// <summary>
+        ///     GPI File DateTime Created
+        /// </summary>
         public DateTime Created = DateTime.MinValue;
+        /// <summary>
+        ///     GPI File Name
+        /// </summary>
         public string Name = null;
+        /// <summary>
+        ///     Multilang Content Data Sources
+        /// </summary>
         public List<KeyValuePair<string, string>> cDataSource = new List<KeyValuePair<string, string>>();
+        /// <summary>
+        ///     Multilang Content Copyrights
+        /// </summary>
         public List<KeyValuePair<string, string>> cCopyrights = new List<KeyValuePair<string, string>>();
 
+        /// <summary>
+        ///     List Of POI Categories in file
+        /// </summary>
         public Dictionary<ushort, RecCategory> Categories = new Dictionary<ushort, RecCategory>();
+
+        /// <summary>
+        ///     List of Bitmaps in file
+        /// </summary>
         public Dictionary<ushort, RecBitmap> Bitmaps = new Dictionary<ushort, RecBitmap>();
+
+        /// <summary>
+        ///     List of Media in file
+        /// </summary>
         public Dictionary<ushort, RecMedia> Medias = new Dictionary<ushort, RecMedia>();
 
+        /// <summary>
+        ///     File Content Data Source (local language)
+        /// </summary>
         public string DataSource
         {
             get
@@ -667,6 +674,9 @@ namespace KMZ_Viewer
             }
         }
 
+        /// <summary>
+        ///     File Content Copyrights (local language)
+        /// </summary>
         public string Copyrights
         {
             get
@@ -683,6 +693,10 @@ namespace KMZ_Viewer
             }
         }
 
+        /// <summary>
+        ///     Constructor (GPI File Reader)
+        /// </summary>
+        /// <param name="fileName"></param>
         public GPIReader(string fileName)
         {
             this.fileName = fileName;
@@ -690,6 +704,10 @@ namespace KMZ_Viewer
             this.LoopRecords(this.RootElement.Childs);
         }
 
+        /// <summary>
+        ///     Save File Content to KML file
+        /// </summary>
+        /// <param name="fileName"></param>
         public void SaveToKML(string fileName)
         {
             string images_file_dir = Path.GetDirectoryName(fileName) + @"\images\";
@@ -732,12 +750,12 @@ namespace KMZ_Viewer
                         desc += String.Format("comm:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
                 if (kCat.Value.Contact != null)
                 {
-                    foreach (KeyValuePair<string, string> langval in kCat.Value.Contact.cPhone)
-                        desc += String.Format("contact_phone:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                    foreach (KeyValuePair<string, string> langval in kCat.Value.Contact.cPhone2)
-                        desc += String.Format("contact_phone2:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                    foreach (KeyValuePair<string, string> langval in kCat.Value.Contact.cFax)
-                        desc += String.Format("contact_fax:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
+                    if (!String.IsNullOrEmpty(kCat.Value.Contact.Phone))
+                        desc += String.Format("contact_phone={0}\r\n", kCat.Value.Contact.Phone);
+                    if (!String.IsNullOrEmpty(kCat.Value.Contact.Phone2))
+                        desc += String.Format("contact_phone2={0}\r\n", kCat.Value.Contact.Phone2);
+                    if (!String.IsNullOrEmpty(kCat.Value.Contact.Fax))
+                        desc += String.Format("contact_fax={0}\r\n", kCat.Value.Contact.Fax);
                     if (!String.IsNullOrEmpty(kCat.Value.Contact.Email))
                         desc += String.Format("contact_email={0}\r\n", kCat.Value.Contact.Email);
                     if (!String.IsNullOrEmpty(kCat.Value.Contact.Web))
@@ -762,12 +780,12 @@ namespace KMZ_Viewer
                             text += String.Format("comm:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
                     if (wp.Contact != null)
                     {
-                        foreach (KeyValuePair<string, string> langval in wp.Contact.cPhone)
-                            text += String.Format("contact_phone:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                        foreach (KeyValuePair<string, string> langval in wp.Contact.cPhone2)
-                            text += String.Format("contact_phone2:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                        foreach (KeyValuePair<string, string> langval in wp.Contact.cFax)
-                            text += String.Format("contact_fax:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
+                        if (!String.IsNullOrEmpty(wp.Contact.Phone))
+                            text += String.Format("contact_phone={0}\r\n", wp.Contact.Phone);
+                        if (!String.IsNullOrEmpty(wp.Contact.Phone2))
+                            text += String.Format("contact_phone2={0}\r\n", wp.Contact.Phone2);
+                        if (!String.IsNullOrEmpty(wp.Contact.Fax))
+                            text += String.Format("contact_fax={0}\r\n", wp.Contact.Fax);
                         if (!String.IsNullOrEmpty(wp.Contact.Email))
                             text += String.Format("contact_email={0}\r\n", wp.Contact.Email);
                         if (!String.IsNullOrEmpty(wp.Contact.Web))
@@ -786,7 +804,7 @@ namespace KMZ_Viewer
                         foreach (KeyValuePair<string, string> langval in wp.Address.aStreet)
                             text += String.Format("addr_street:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
                         if (!String.IsNullOrEmpty(wp.Address.House))
-                            text += String.Format("addr_house={0}\r\n", wp.Address.Postal);
+                            text += String.Format("addr_house={0}\r\n", wp.Address.House);
                     };
                     if (wp.Alert != null)
                     {
@@ -818,7 +836,7 @@ namespace KMZ_Viewer
                             fsimid.Write(wp.Image.ImageData, 0, wp.Image.ImageData.Length);
                             fsimid.Close();
                             simstyles.Add(simid);
-                            style = simid;
+                            if (POI_IMAGE_FROM_JPEG) style = simid;
                         }
                         catch (Exception ex) { };
                     };
@@ -938,6 +956,11 @@ namespace KMZ_Viewer
             fs.Close();
         }
 
+        /// <summary>
+        ///     Trim Text
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         private string TrimDesc(string text)
         {
             while (text.IndexOf("\r\n\r\n") >= 0) text = text.Replace("\r\n\r\n", "");
@@ -945,6 +968,10 @@ namespace KMZ_Viewer
             return text;
         }
 
+        /// <summary>
+        ///     Loop Records References
+        /// </summary>
+        /// <param name="records"></param>
         private void LoopRecords(List<Record> records)
         {
             if ((records == null) || (records.Count == 0)) return;
@@ -955,6 +982,10 @@ namespace KMZ_Viewer
             };
         }
 
+        /// <summary>
+        ///     Get Record References
+        /// </summary>
+        /// <param name="r"></param>
         private void GetReferences(Record r)
         {
             if (r is RecBitmapReference)
@@ -979,6 +1010,9 @@ namespace KMZ_Viewer
             };
         }
 
+        /// <summary>
+        ///     Read Source File Data
+        /// </summary>
         private void Read()
         {
             FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
@@ -990,6 +1024,11 @@ namespace KMZ_Viewer
                 ReadData(ref fileData, RootElement);
         }
 
+        /// <summary>
+        ///     Read Block Data
+        /// </summary>
+        /// <param name="fileData"></param>
+        /// <param name="parent"></param>
         private void ReadData(ref byte[] fileData, Record parent)
         {
             int offset = 0;
@@ -1000,6 +1039,13 @@ namespace KMZ_Viewer
             };
         }
 
+        /// <summary>
+        ///     Read Block Record Data
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="parent"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
         private int ReadRecordBlock(ref byte[] data, Record parent, int offset)
         {
             int start_offset = offset;
@@ -1035,6 +1081,10 @@ namespace KMZ_Viewer
             return ttlbl;
         }
 
+        /// <summary>
+        ///     Read Block Record Main Data
+        /// </summary>
+        /// <param name="rec"></param>
         private void ReadMainBlock(Record rec)
         {
             if ((rec.RType == 0) && (rec is RecHeader0)) ReadHeader1((RecHeader0)rec);
@@ -1052,6 +1102,8 @@ namespace KMZ_Viewer
             if ((rec.RType == 12) && (rec is RecContact)) ReadContact((RecContact)rec);
             if ((rec.RType == 13) && (rec is RecImage)) ReadImage((RecImage)rec);
             if ((rec.RType == 14) && (rec is RecDescription)) ReadDecription((RecDescription)rec);
+            if ((rec.RType == 15) && (rec is RecProductInfo)) ReadProductInfo((RecProductInfo)rec);
+            if ((rec.RType == 16) && (rec is RecAlertCircle)) ReadAlertCircle((RecAlertCircle)rec);
             if ((rec.RType == 17) && (rec is RecCopyright)) ReadCopyright((RecCopyright)rec);
             if ((rec.RType == 18) && (rec is RecMedia)) ReadMedia((RecMedia)rec);
             if ((rec.RType == 19) && (rec is RecSpeedCamera)) ReadSpeedCamera((RecSpeedCamera)rec);
@@ -1288,6 +1340,70 @@ namespace KMZ_Viewer
                         rec.House = text;
                     };
                 };
+                if (this.Version == "00")
+                {
+                    offset = 0;
+                    if ((rec.Flags & 0x0001) == 0x0001)
+                    {
+                        uint len = BitConverter.ToUInt32(rec.ExtraData, offset); offset += 4;
+                        int readed = 0;
+                        while (readed < len)
+                        {
+                            string lang = Encoding.ASCII.GetString(rec.ExtraData, offset, 2); offset += 2; readed += 2;
+                            ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2; readed += 2;
+                            string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen; readed += tlen;
+                            rec.aCity.Add(new KeyValuePair<string, string>(lang, text));
+                        };
+                    };
+                    if ((rec.Flags & 0x0002) == 0x0002)
+                    {
+                        uint len = BitConverter.ToUInt32(rec.ExtraData, offset); offset += 4;
+                        int readed = 0;
+                        while (readed < len)
+                        {
+                            string lang = Encoding.ASCII.GetString(rec.ExtraData, offset, 2); offset += 2; readed += 2;
+                            ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2; readed += 2;
+                            string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen; readed += tlen;
+                            rec.aCountry.Add(new KeyValuePair<string, string>(lang, text));
+                        };
+                    };
+                    if ((rec.Flags & 0x0004) == 0x0004)
+                    {
+                        uint len = BitConverter.ToUInt32(rec.ExtraData, offset); offset += 4;
+                        int readed = 0;
+                        while (readed < len)
+                        {
+                            string lang = Encoding.ASCII.GetString(rec.ExtraData, offset, 2); offset += 2; readed += 2;
+                            ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2; readed += 2;
+                            string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen; readed += tlen;
+                            rec.aState.Add(new KeyValuePair<string, string>(lang, text));
+                        };
+                    };
+                    if ((rec.Flags & 0x0008) == 0x0008)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.Postal = text;
+                    };
+                    if ((rec.Flags & 0x0010) == 0x0010)
+                    {
+                        uint len = BitConverter.ToUInt32(rec.ExtraData, offset); offset += 4;
+                        int readed = 0;
+                        while (readed < len)
+                        {
+                            string lang = Encoding.ASCII.GetString(rec.ExtraData, offset, 2); offset += 2; readed += 2;
+                            ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2; readed += 2;
+                            string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen; readed += tlen;
+                            rec.aStreet.Add(new KeyValuePair<string, string>(lang, text));
+                        };
+                    };
+                    if ((rec.Flags & 0x0020) == 0x0020)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.House = text;
+                    };
+                };
                 if ((rec.Parent != null) && (rec.Parent is RecWaypoint)) ((RecWaypoint)rec.Parent).Address = rec;
 
             }
@@ -1307,63 +1423,67 @@ namespace KMZ_Viewer
                 {
                     if ((rec.Flags & 0x0001) == 0x0001)
                     {
-                        uint len = BitConverter.ToUInt32(rec.MainData, offset); offset += 4;
-                        int readed = 0;
-                        while (readed < len)
-                        {
-                            string lang = Encoding.ASCII.GetString(rec.MainData, offset, 2); offset += 2; readed += 2;
-                            ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2; readed += 2;
-                            string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen; readed += tlen;
-                            rec.cPhone.Add(new KeyValuePair<string, string>(lang, text));
-                        };
+                        ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen;
+                        rec.Phone = text;
                     };
                     if ((rec.Flags & 0x0002) == 0x0002)
                     {
-                        uint len = BitConverter.ToUInt32(rec.MainData, offset); offset += 4;
-                        int readed = 0;
-                        while (readed < len)
-                        {
-                            string lang = Encoding.ASCII.GetString(rec.MainData, offset, 2); offset += 2; readed += 2;
-                            ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2; readed += 2;
-                            string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen; readed += tlen;
-                            rec.cPhone2.Add(new KeyValuePair<string, string>(lang, text));
-                        };
+                        ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen;
+                        rec.Phone2 = text;
                     };
                     if ((rec.Flags & 0x0004) == 0x0004)
                     {
-                        uint len = BitConverter.ToUInt32(rec.MainData, offset); offset += 4;
-                        int readed = 0;
-                        while (readed < len)
-                        {
-                            string lang = Encoding.ASCII.GetString(rec.MainData, offset, 2); offset += 2; readed += 2;
-                            ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2; readed += 2;
-                            string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen; readed += tlen;
-                            rec.cFax.Add(new KeyValuePair<string, string>(lang, text));
-                        };
+                        ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen;
+                        rec.Fax = text;
                     };
                     if ((rec.Flags & 0x0008) == 0x0008)
                     {
-                        uint len = BitConverter.ToUInt32(rec.MainData, offset); offset += 4;
-                        int readed = 0;
-                        while (readed < len)
-                        {
-                            string lang = Encoding.ASCII.GetString(rec.MainData, offset, 2); offset += 2; readed += 2;
-                            ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2; readed += 2;
-                            string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen; readed += tlen;
-                            rec.cEmail.Add(new KeyValuePair<string, string>(lang, text));
-                        };
+                        ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen;
+                        rec.Email = text;
                     };
                     if ((rec.Flags & 0x0010) == 0x0010)
                     {
-                        uint len = BitConverter.ToUInt32(rec.MainData, offset); offset += 4;
-                        int readed = 0;
-                        while (readed < len)
-                        {
-                            string lang = Encoding.ASCII.GetString(rec.MainData, offset, 2); offset += 2; readed += 2;
-                            ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2; readed += 2;
-                            string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen; readed += tlen;
-                            rec.cWeb.Add(new KeyValuePair<string, string>(lang, text));
-                        };
+                        ushort tlen = BitConverter.ToUInt16(rec.MainData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.MainData, offset, tlen); offset += tlen;
+                        rec.Web = text;
+                    };
+                };
+                if (this.Version == "00")
+                {
+                    offset = 0;
+                    if ((rec.Flags & 0x0001) == 0x0001)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.Phone = text;
+                    };
+                    if ((rec.Flags & 0x0002) == 0x0002)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.Phone2 = text;
+                    };
+                    if ((rec.Flags & 0x0004) == 0x0004)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.Fax = text;
+                    };
+                    if ((rec.Flags & 0x0008) == 0x0008)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.Email = text;
+                    };
+                    if ((rec.Flags & 0x0010) == 0x0010)
+                    {
+                        ushort tlen = BitConverter.ToUInt16(rec.ExtraData, offset); offset += 2;
+                        string text = this.Encoding.GetString(rec.ExtraData, offset, tlen); offset += tlen;
+                        rec.Web = text;
                     };
                 };
                 if ((rec.Parent != null) && (rec.Parent is RecWaypoint)) ((RecWaypoint)rec.Parent).Contact = rec;
@@ -1382,7 +1502,11 @@ namespace KMZ_Viewer
                 rec.Length = BitConverter.ToUInt32(rec.MainData, 1);
                 rec.ImageData = new byte[rec.Length];
                 if (rec.Length > 0)
+                {
                     Array.Copy(rec.MainData, 5, rec.ImageData, 0, rec.Length);
+                    if ((rec.Parent != null) && (rec.Parent is RecWaypoint))
+                        ((RecWaypoint)rec.Parent).Image = rec;
+                };
             }
             catch (Exception ex)
             {
@@ -1406,6 +1530,36 @@ namespace KMZ_Viewer
                 };
                 if ((rec.Parent != null) && (rec.Parent is RecWaypoint)) ((RecWaypoint)rec.Parent).Description = rec;
                 if ((rec.Parent != null) && (rec.Parent is RecCategory)) ((RecCategory)rec.Parent).Description = rec;
+            }
+            catch (Exception ex)
+            {
+                rec.ReadError = ex;
+            };
+        }
+
+        private void ReadProductInfo(RecProductInfo rec) // 15
+        {
+            rec.FactoryID = BitConverter.ToUInt16(rec.MainData, 0);
+            rec.ProductID = rec.MainData[2];
+            rec.RegionID = rec.MainData[3];
+            rec.VendorID = rec.MainData[4];
+        }
+
+        private void ReadAlertCircle(RecAlertCircle rec) // 16
+        {
+            try
+            {
+                rec.Count = BitConverter.ToUInt16(rec.MainData, 0);
+                rec.lat = new double[rec.Count];
+                rec.lon = new double[rec.Count];
+                rec.radius = new uint[rec.Count];
+                for (int i = 0; i < rec.Count; i++)
+                {
+                    rec.lat[i] = (double)BitConverter.ToUInt32(rec.MainData, 2 + i * 12) * 360.0 / Math.Pow(2, 32);
+                    rec.lon[i] = (double)BitConverter.ToUInt32(rec.MainData, 2 + i * 12 + 4) * 360.0 / Math.Pow(2, 32);
+                    rec.radius[i] = BitConverter.ToUInt32(rec.MainData, 2 + i * 12 + 8);
+                };
+                if ((rec.Parent != null) && (rec.Parent is RecAlert)) ((RecAlert)rec.Parent).AlertCircles = rec;
             }
             catch (Exception ex)
             {

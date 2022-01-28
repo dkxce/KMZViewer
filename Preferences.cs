@@ -62,12 +62,11 @@ namespace KMZ_Viewer
         private void LoadDefaults()
         {
             if (DefaultsIsLoaded) return;
-            if (Properties == null)
-            {
-                Properties = new List<Property>();
-                this["gpi_localization"] = "EN";
-            };
-            //if (!this.Contains("gpiwriter_set_descriptions")) Properties.Add(new Property("gpiwriter_set_descriptions", "yes"));
+            if (Properties == null) Properties = new List<Property>();
+            if ((Properties.Count > 0) && (String.IsNullOrEmpty(Properties[0].comm))) Properties = new List<Property>();
+            if (!this.Contains("gpi_localization")) Properties.Add(new Property("gpi_localization", "EN", 0, "2-symbols string, Language, ISO-639 code"));
+            if (!this.Contains("gpireader_save_media")) Properties.Add(new Property("gpireader_save_media", "no", 1, "Save media from GPI"));
+            if (!this.Contains("gpireader_poi_image_from_jpeg")) Properties.Add(new Property("gpireader_poi_image_from_jpeg", "no", 1, "If yes - POI image sets from JPEG, if no - from Bitmap"));
             DefaultsIsLoaded = true;
         }
 
@@ -102,16 +101,27 @@ namespace KMZ_Viewer
         {
             [XmlAttribute]
             public string name;
+            [XmlAttribute]
+            public byte cat; // 0 - string, 1 - boolean, 2 - number, 3 - disable
+            [XmlAttribute]
+            public string comm;
+            [XmlAttribute]
+            public ushort min = ushort.MinValue;
+            [XmlAttribute]
+            public ushort max = ushort.MaxValue;
             [XmlText]
             public string value;
 
             public Property() { }
             public Property(string name) { this.name = name; }
             public Property(string name, string value) { this.name = name; this.value = value; }
+            public Property(string name, string value, byte cat) { this.name = name; this.value = value; this.cat = cat; }
+            public Property(string name, string value, byte cat, string comm) { this.name = name; this.value = value; this.cat = cat; this.comm = comm; }
+            public Property(string name, string value, byte cat, string comm, byte min, byte max) { this.name = name; this.value = value; this.cat = cat; this.comm = comm; this.min = min; this.max = max; }
 
             public override string ToString()
             {
-                return String.Format("{0}={1}", name, value);
+                return String.Format("{0} = {1}", name, value);
             }
         }
 
@@ -124,33 +134,41 @@ namespace KMZ_Viewer
             form.ShowIcon = false;
             form.ShowInTaskbar = false;
             form.Width = 400;
-            form.Height = 380;
-            form.Text = "Preferences";
+            form.Height = 420;
+            form.Text = "Предпочтения";
             form.FormBorderStyle = FormBorderStyle.FixedDialog;
             Label lab = new Label();
             form.Controls.Add(lab);
-            lab.Text = "Double click on item or press Space to edit/change value:";
+            lab.Text = "Дважды кликните или нажмите пробел/ввод для изменения:";
             lab.AutoSize = true;
             lab.Left = 8;
             lab.Top = 5;
+            Label hel = new Label();
+            form.Controls.Add(hel);
+            hel.Text = "-- параметр не выбран --";
+            hel.Width = form.Width - 26;
+            hel.Height = 32;
+            hel.Left = 8;
+            hel.Top = 25 + form.Height - 116;
             ListBox lb = new ListBox();
             form.Controls.Add(lb);
             lb.Width = form.Width - 26;
             lb.Left = 10;
             lb.Top = 25;
-            lb.Height = form.Height - 90;
+            lb.Height = form.Height - 110;
             lb.BorderStyle = BorderStyle.FixedSingle;
             foreach (Property prop in Properties) lb.Items.Add(prop);
             lb.DoubleClick += (delegate(object sender, EventArgs e) { OnChangeItem(lb); });
-            lb.KeyPress += (delegate(object sender, KeyPressEventArgs e) { if (e.KeyChar == (char)32) OnChangeItem(lb); });
+            lb.KeyPress += (delegate(object sender, KeyPressEventArgs e) { if ((e.KeyChar == (char)32) || (e.KeyChar == (char)13)) OnChangeItem(lb); });
+            lb.SelectedIndexChanged += (delegate(object sender, EventArgs e) { if (lb.SelectedIndex < 0) hel.Text = "-- параметр не выбран --"; else hel.Text = ((Property)lb.SelectedItem).comm; });
             Button okbtn = new Button();
             form.Controls.Add(okbtn);
             okbtn.Left = form.Width / 2 - okbtn.Width / 2;
-            okbtn.Top = lb.Top + lb.Height + 6;
+            okbtn.Top = lb.Top + lb.Height + 26;
             okbtn.Text = "OK";
             okbtn.Click += (delegate(object sender, EventArgs e) { form.Close(); });
             form.ShowDialog();
-            form.Dispose();
+            form.Dispose();            
         }
 
         private void OnChangeItem(ListBox lb)
@@ -158,15 +176,40 @@ namespace KMZ_Viewer
             int si = lb.SelectedIndex;
             if (si >= 0)
             {
-                Property p = (Property)lb.Items[si];
+                Property p = (Property)lb.SelectedItem;
+                if (p.cat == 3) return;
+                string caption = "Изменить значение";
                 string nval = p.value;
-                if (InputBox.Show("Edit value", p.name + ":", ref nval) == DialogResult.OK)
+                if (p.cat == 1) // boolean value
                 {
-                    p.value = nval.Trim();
-                    this[p.name] = p.value;
-                    lb.Items.RemoveAt(si);
-                    lb.Items.Insert(si, p);
-                    lb.SetSelected(si, true);
+                    int ifl = 0;
+                    List<string> yn = new List<string>(new string[] { "no", "yes" });
+                    if (nval == "yes") ifl = 1;
+                    if (InputBox.Show(caption, p.name + ":", yn.ToArray(), ref ifl) == DialogResult.OK)
+                    {
+                        p.value = yn[ifl];
+                        this[p.name] = p.value;
+                        lb.Items[si] = p;
+                    };
+                }
+                else if (p.cat == 2) // number value
+                {
+                    int ifl = int.Parse(nval);
+                    if (InputBox.Show(caption, p.name + ":", ref ifl, p.min, p.max) == DialogResult.OK)
+                    {
+                        p.value = ifl.ToString();
+                        this[p.name] = p.value;
+                        lb.Items[si] = p;
+                    };
+                }
+                else // text value
+                {
+                    if (InputBox.Show(caption, p.name + ":", ref nval, "R^.{" + p.min + "," + p.max + "}$") == DialogResult.OK)
+                    {
+                        p.value = nval.Trim();
+                        this[p.name] = p.value;
+                        lb.Items[si] = p;
+                    };
                 };
             };
         }
