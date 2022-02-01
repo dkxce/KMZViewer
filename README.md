@@ -37,7 +37,7 @@ Simple powerfull tool to view kml/kmz files
 Умеет работать с тайлами, сохранеными на диске.
 
 **Полноценная поддержка GPI файлов**:
-- Multilanguage (EN or any latin, RU or anty ciryllic)
+- Multilanguage (EN or any latin, RU or any ciryllic)
 - Категории объектов (Layers (Categories))
 - Точки интересов (POI)
 - Примечания (POI Description)
