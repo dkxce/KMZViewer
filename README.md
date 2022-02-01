@@ -44,7 +44,7 @@ Simple powerfull tool to view kml/kmz files
 - Комментарии (POI Comment (load/save from/to desc))
 - Адресная информация (POI Address (load/save from/to desc))
 - Контактная информация (POI Contact (load/save from/to desc))
-- Предупреждения (POI Alert (load/save from/to desc)) со звуками
+- Предупреждения (POI Alert (load/save from/to desc)) со звуками и установками срабатывания
 - Иконки (POI Bitmap (get/set from/to kml style))
 - Картинки (POI Image (get/set from/to kml style))
 
