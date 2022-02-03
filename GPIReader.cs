@@ -715,6 +715,8 @@ namespace KMZ_Viewer
     /// </summary>
     public class GPIReader
     {
+        public delegate void Add2LogProc(string text);
+
         /// <summary>
         ///     Current Locale Language ISO-639
         /// </summary>
@@ -795,6 +797,9 @@ namespace KMZ_Viewer
         /// </summary>
         public Dictionary<ushort, RecMedia> Medias = new Dictionary<ushort, RecMedia>();
 
+        private Add2LogProc Add2Log;
+        private uint readNotifier;
+
         /// <summary>
         ///     File Content Data Source (local language)
         /// </summary>
@@ -845,14 +850,40 @@ namespace KMZ_Viewer
         }
 
         /// <summary>
+        ///     Constructor (GPI File Reader)
+        /// </summary>
+        /// <param name="fileName"></param>
+        public GPIReader(string fileName, Add2LogProc Add2Log)
+        {
+            this.Add2Log = Add2Log;
+            this.fileName = fileName;
+            this.Read();
+            if (Add2Log != null) Add2Log(String.Format("POI File, version {0}", this.Version));
+            if (Add2Log != null) Add2Log("Reading References...");
+            this.LoopRecords(this.RootElement.Childs);
+            if (Add2Log != null) Add2Log("Reading Done");
+        }
+
+        /// <summary>
         ///     Save File Content to KML file
         /// </summary>
         /// <param name="fileName"></param>
         public void SaveToKML(string fileName)
         {
+            SaveToKML(fileName, null);
+        }
+
+        /// <summary>
+        ///     Save File Content to KML file
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void SaveToKML(string fileName, Add2LogProc Add2Log)
+        {
+            if (Add2Log != null) this.Add2Log = Add2Log;
             string images_file_dir = Path.GetDirectoryName(fileName) + @"\images\";
             Directory.CreateDirectory(images_file_dir);
 
+            if (this.Add2Log != null) this.Add2Log("Saving to kml...");
             FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.UTF8);
             sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -867,9 +898,12 @@ namespace KMZ_Viewer
                 desc += String.Format("copyrights:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
             sw.WriteLine("<description><![CDATA[" + desc + "]]></description>");
             List<string> simstyles = new List<string>();
+            int ccount = 0;
             foreach (KeyValuePair<ushort, RecCategory> kCat in this.Categories)
             {
+                ccount++;
                 if (kCat.Value.Waypoints.Count == 0) continue;
+                if (this.Add2Log != null) this.Add2Log(String.Format("Saving {2} POIs of {0}/{1} Category...", ccount, this.Categories.Count, kCat.Value.Waypoints.Count));
 
                 string style = "catid" + kCat.Value.CategoryID.ToString();
                 if (kCat.Value.Bitmap != null) style = "imgid" + kCat.Value.Bitmap.BitmapID.ToString();
@@ -1013,6 +1047,7 @@ namespace KMZ_Viewer
             {
                 sw.WriteLine("\t<Style id=\"" + simid + "\"><IconStyle><Icon><href>images/" + simid + ".jpg</href></Icon></IconStyle></Style>");
             };
+            if (this.Add2Log != null) this.Add2Log(String.Format("Saving Images for {0} Categories...", this.Categories.Count));
             foreach (KeyValuePair<ushort, RecCategory> kCat in this.Categories)
             {
                 if (kCat.Value.Bitmap != null) continue;
@@ -1031,6 +1066,7 @@ namespace KMZ_Viewer
                 }
                 catch (Exception ex) { };
             }
+            if (this.Add2Log != null) this.Add2Log(String.Format("Saving {0} Bitmaps...", this.Bitmaps.Count));
             foreach (KeyValuePair<ushort, RecBitmap> bitmaps in this.Bitmaps)
             {
                 string imgID = "imgid" + bitmaps.Value.BitmapID.ToString();
@@ -1094,6 +1130,7 @@ namespace KMZ_Viewer
                     };
                 };
             };
+            if (this.Add2Log != null) this.Add2Log(String.Format("Saving {0} Medias...", this.Medias.Count));
             if (SAVE_MEDIA && (Medias.Count > 0))
             {
                 string medias_file_dir = Path.GetDirectoryName(fileName) + @"\media\";
@@ -1106,15 +1143,20 @@ namespace KMZ_Viewer
                         if (rm.Value.Format == 0) ext = "wav";
                         if (rm.Value.Format == 1) ext = "mp3";
                         string fName = String.Format("{0}{1}-{2}.{3}", medias_file_dir, rm.Value.MediaID, rm.Value.Content[i].Key, ext);
-                        FileStream fsw = new FileStream(fName, FileMode.Create, FileAccess.Write);
-                        fsw.Write(rm.Value.Content[i].Value, 0, rm.Value.Content[i].Value.Length);
-                        fsw.Close();
+                        try
+                        {
+                            FileStream fsw = new FileStream(fName, FileMode.Create, FileAccess.Write);
+                            fsw.Write(rm.Value.Content[i].Value, 0, rm.Value.Content[i].Value.Length);
+                            fsw.Close();
+                        }
+                        catch (Exception ex) { };
                     };
                 };
             };
             sw.WriteLine("</Document></kml>");
             sw.Close();
             fs.Close();
+            if (this.Add2Log != null) this.Add2Log("All data saved");
         }
 
         /// <summary>
@@ -1195,6 +1237,14 @@ namespace KMZ_Viewer
             uint currOffset = blockOffset;
             while (currOffset < (blockOffset + blockLength))
             {
+                if (this.Add2Log != null)
+                {
+                    if (currOffset >= readNotifier)
+                    {
+                        this.Add2Log(String.Format("Reading {0}/{1} Data...", currOffset, blockData.Length));
+                        readNotifier += 256000; // 256kb
+                    };
+                };
                 uint readedLength = ReadRecordBlock(ref blockData, parent, currOffset);
                 currOffset += readedLength;
             };
@@ -1306,8 +1356,13 @@ namespace KMZ_Viewer
             {
                 string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                 ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                rec.ShortName.Add(new KeyValuePair<string, string>(lang, text));
+                if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                {
+                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                    rec.ShortName.Add(new KeyValuePair<string, string>(lang, text));
+                }
+                else
+                    offset += tlen;
             };
             return true;
         }
@@ -1384,8 +1439,13 @@ namespace KMZ_Viewer
             {
                 string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                 ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                rec.Category.Add(new KeyValuePair<string, string>(lang, text));
+                if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                {
+                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                    rec.Category.Add(new KeyValuePair<string, string>(lang, text));
+                }
+                else
+                    offset += tlen;
             };
             this.Categories.Add(rec.CategoryID, rec);
             return true;
@@ -1410,8 +1470,13 @@ namespace KMZ_Viewer
             {
                 string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                 ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                rec.DataSource.Add(new KeyValuePair<string, string>(lang, text));
+                if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                {
+                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                    rec.DataSource.Add(new KeyValuePair<string, string>(lang, text));
+                }
+                else
+                    offset += tlen;
             };
 
             ReadData(ref data, (uint)offset, rec.LengthMain - (uint)readed, rec);
@@ -1429,8 +1494,13 @@ namespace KMZ_Viewer
                 {
                     string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                     ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                    rec.Comment.Add(new KeyValuePair<string, string>(lang, text));
+                    if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                    {
+                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                        rec.Comment.Add(new KeyValuePair<string, string>(lang, text));
+                    }
+                    else
+                        offset += tlen;
                 };
                 if ((rec.Parent != null) && (rec.Parent is RecWaypoint)) ((RecWaypoint)rec.Parent).Comment = rec;
                 if ((rec.Parent != null) && (rec.Parent is RecCategory)) ((RecCategory)rec.Parent).Comment = rec;
@@ -1456,8 +1526,13 @@ namespace KMZ_Viewer
                     {
                         string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                         ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                        rec.aCity.Add(new KeyValuePair<string, string>(lang, text));
+                        if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                        {
+                            string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                            rec.aCity.Add(new KeyValuePair<string, string>(lang, text));
+                        }
+                        else
+                            offset += tlen;
                     };
                 };
                 if ((rec.Flags & 0x0002) == 0x0002)
@@ -1468,8 +1543,13 @@ namespace KMZ_Viewer
                     {
                         string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                         ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                        rec.aCountry.Add(new KeyValuePair<string, string>(lang, text));
+                        if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                        {
+                            string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                            rec.aCountry.Add(new KeyValuePair<string, string>(lang, text));
+                        }
+                        else
+                            offset += tlen;
                     };
                 };
                 if ((rec.Flags & 0x0004) == 0x0004)
@@ -1480,8 +1560,13 @@ namespace KMZ_Viewer
                     {
                         string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                         ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                        rec.aState.Add(new KeyValuePair<string, string>(lang, text));
+                        if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                        {
+                            string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                            rec.aState.Add(new KeyValuePair<string, string>(lang, text));
+                        }
+                        else
+                            offset += tlen;
                     };
                 };
                 if ((rec.Flags & 0x0008) == 0x0008)
@@ -1498,8 +1583,13 @@ namespace KMZ_Viewer
                     {
                         string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                         ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                        rec.aStreet.Add(new KeyValuePair<string, string>(lang, text));
+                        if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                        {
+                            string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                            rec.aStreet.Add(new KeyValuePair<string, string>(lang, text));
+                        }
+                        else
+                            offset += tlen;
                     };
                 };
                 if ((rec.Flags & 0x0020) == 0x0020)
@@ -1595,8 +1685,13 @@ namespace KMZ_Viewer
                 {
                     string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                     ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                    rec.Description.Add(new KeyValuePair<string, string>(lang, text));
+                    if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                    {
+                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                        rec.Description.Add(new KeyValuePair<string, string>(lang, text));
+                    }
+                    else
+                        offset += tlen;
                 };
                 if ((rec.Parent != null) && (rec.Parent is RecWaypoint)) ((RecWaypoint)rec.Parent).Description = rec;
                 if ((rec.Parent != null) && (rec.Parent is RecCategory)) ((RecCategory)rec.Parent).Description = rec;
@@ -1655,8 +1750,13 @@ namespace KMZ_Viewer
                 {
                     string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                     ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                    rec.cDataSource.Add(new KeyValuePair<string, string>(lang, text));
+                    if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                    {
+                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                        rec.cDataSource.Add(new KeyValuePair<string, string>(lang, text));
+                    }
+                    else
+                        offset += tlen;
                 };
                 len = BitConverter.ToUInt32(data, (int)offset); offset += 4;
                 readed = 0;
@@ -1664,8 +1764,13 @@ namespace KMZ_Viewer
                 {
                     string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                     ushort tlen = BitConverter.ToUInt16(data, (int)offset); offset += 2; readed += 2;
-                    string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
-                    rec.cCopyrights.Add(new KeyValuePair<string, string>(lang, text));
+                    if ((tlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                    {
+                        string text = this.Encoding.GetString(data, (int)offset, tlen); offset += tlen; readed += tlen;
+                        rec.cCopyrights.Add(new KeyValuePair<string, string>(lang, text));
+                    }
+                    else
+                        offset += tlen;
                 };
                 this.cDataSource = rec.cDataSource;
                 this.cCopyrights = rec.cCopyrights;
@@ -1697,9 +1802,14 @@ namespace KMZ_Viewer
                 {
                     string lang = Encoding.ASCII.GetString(data, (int)offset, 2); offset += 2; readed += 2;
                     uint mlen = BitConverter.ToUInt32(data, (int)offset); offset += 4; readed += 4;
-                    byte[] media = new byte[mlen];
-                    Array.Copy(data, offset, media, 0, mlen); offset += mlen; readed += (int)mlen;
-                    rec.Content.Add(new KeyValuePair<string, byte[]>(lang, media));
+                    if ((mlen > 0) && char.IsLetter(lang[0]) && char.IsLetter(lang[1]))
+                    {
+                        byte[] media = new byte[mlen];
+                        Array.Copy(data, offset, media, 0, mlen); offset += mlen; readed += (int)mlen;
+                        rec.Content.Add(new KeyValuePair<string, byte[]>(lang, media));
+                    }
+                    else
+                        offset += mlen;
                 };
                 Medias.Add(rec.MediaID, rec);
             }

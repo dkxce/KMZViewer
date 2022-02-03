@@ -127,6 +127,7 @@ namespace KMZ_Viewer
 
         public void ShowChangeDialog()
         {
+            LoadDefaults();
             Form form = new Form();
             form.StartPosition = FormStartPosition.CenterParent;
             form.MinimizeBox = false;

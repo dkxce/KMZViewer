@@ -128,6 +128,8 @@ namespace KMZ_Viewer
             this.openPlugInsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pofiles = new System.Windows.Forms.ToolStripMenuItem();
             this.сохранитьСлоиВФайлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem36 = new System.Windows.Forms.ToolStripSeparator();
+            this.propsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.showrouteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sPVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -468,8 +470,6 @@ namespace KMZ_Viewer
             this.toolStripStatusLabel12 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel13 = new System.Windows.Forms.ToolStripStatusLabel();
             this.rtStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripMenuItem36 = new System.Windows.Forms.ToolStripSeparator();
-            this.propsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip2.SuspendLayout();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -586,6 +586,18 @@ namespace KMZ_Viewer
             this.сохранитьСлоиВФайлToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
             this.сохранитьСлоиВФайлToolStripMenuItem.Text = "Сохранить слои в файл...";
             this.сохранитьСлоиВФайлToolStripMenuItem.Click += new System.EventHandler(this.сохранитьСлоиВФайлToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem36
+            // 
+            this.toolStripMenuItem36.Name = "toolStripMenuItem36";
+            this.toolStripMenuItem36.Size = new System.Drawing.Size(263, 6);
+            // 
+            // propsToolStripMenuItem
+            // 
+            this.propsToolStripMenuItem.Name = "propsToolStripMenuItem";
+            this.propsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.propsToolStripMenuItem.Text = "Предпочтения...";
+            this.propsToolStripMenuItem.Click += new System.EventHandler(this.propsToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -708,7 +720,7 @@ namespace KMZ_Viewer
             this.toolStripStatusLabel1.BackColor = System.Drawing.Color.Navy;
             this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.Silver;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(361, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(392, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -3767,18 +3779,6 @@ namespace KMZ_Viewer
             this.rtStatus.Name = "rtStatus";
             this.rtStatus.Size = new System.Drawing.Size(25, 17);
             this.rtStatus.Text = "Idle";
-            // 
-            // toolStripMenuItem36
-            // 
-            this.toolStripMenuItem36.Name = "toolStripMenuItem36";
-            this.toolStripMenuItem36.Size = new System.Drawing.Size(263, 6);
-            // 
-            // propsToolStripMenuItem
-            // 
-            this.propsToolStripMenuItem.Name = "propsToolStripMenuItem";
-            this.propsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
-            this.propsToolStripMenuItem.Text = "Предпочтения...";
-            this.propsToolStripMenuItem.Click += new System.EventHandler(this.propsToolStripMenuItem_Click);
             // 
             // KMZViewerForm
             // 
