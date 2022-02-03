@@ -66,6 +66,8 @@ namespace KMZ_Viewer
             if ((Properties.Count > 0) && (String.IsNullOrEmpty(Properties[0].comm))) Properties = new List<Property>();
             if (!this.Contains("gpi_localization")) Properties.Add(new Property("gpi_localization", "EN", 0, "2-symbols string, Language, ISO-639 code"));
             if (!this.Contains("gpireader_save_media")) Properties.Add(new Property("gpireader_save_media", "no", 1, "Save media from GPI"));
+            if (!this.Contains("gpireader_multinames_in_desc")) Properties.Add(new Property("gpireader_multinames_in_desc", "yes", 1, "Save multilanguage names in description"));
+            if (!this.Contains("gpireader_create_cat_noimage")) Properties.Add(new Property("gpireader_create_cat_noimage", "no", 1, "Create Images for categories without images"));
             if (!this.Contains("gpireader_poi_image_from_jpeg")) Properties.Add(new Property("gpireader_poi_image_from_jpeg", "no", 1, "If yes - POI image sets from JPEG, if no - from Bitmap"));
             DefaultsIsLoaded = true;
         }

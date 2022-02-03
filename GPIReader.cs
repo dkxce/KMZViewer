@@ -730,9 +730,17 @@ namespace KMZ_Viewer
         /// </summary>
         public static bool SAVE_MEDIA = false;
         /// <summary>
+        ///     Create Images for categories without images
+        /// </summary>
+        public static bool CREATE_CATEGORY_IMAGES_IFNO = false;
+        /// <summary>
         ///     Set kmz poi image from jpeg (not bitmap); false - from bitmap; true - from image (if specified)
         /// </summary>
         public static bool POI_IMAGE_FROM_JPEG = false; // bitmap o
+        /// <summary>
+        ///     Save Multilanguage Names in Description
+        /// </summary>
+        public static bool SAVE_MULTINAMES = true;
 
         /// <summary>
         ///     Source File Name
@@ -911,14 +919,9 @@ namespace KMZ_Viewer
                 sw.WriteLine("<Folder><name><![CDATA[" + kCat.Value.Name + "]]></name>");
                 desc = "CategoryID: " + kCat.Value.CategoryID.ToString() + "\r\n";
                 desc += "Objects: " + kCat.Value.Waypoints.Count.ToString() + "\r\n";
-                foreach (KeyValuePair<string, string> langval in kCat.Value.Category)
-                    desc += String.Format("name:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
-                if ((kCat.Value.Description != null) && (kCat.Value.Description.Description.Count > 0))
-                {
-                    desc += "\r\n";
-                    foreach (KeyValuePair<string, string> langval in kCat.Value.Description.Description)
-                        desc += String.Format("desc:{0}={1}\r\n\r\n", langval.Key.ToLower(), TrimDesc(langval.Value));
-                };
+                if (GPIReader.SAVE_MULTINAMES)
+                    foreach (KeyValuePair<string, string> langval in kCat.Value.Category)
+                        desc += String.Format("name:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
                 if (kCat.Value.Comment != null)
                     foreach (KeyValuePair<string, string> langval in kCat.Value.Comment.Comment)
                         desc += String.Format("comm:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
@@ -935,14 +938,21 @@ namespace KMZ_Viewer
                     if (!String.IsNullOrEmpty(kCat.Value.Contact.Web))
                         desc += String.Format("contact_web={0}\r\n", kCat.Value.Contact.Web);
                 };
+                if ((kCat.Value.Description != null) && (kCat.Value.Description.Description.Count > 0))
+                {
+                    if (desc.Length > 0) desc += "\r\n";
+                    foreach (KeyValuePair<string, string> langval in kCat.Value.Description.Description)
+                        desc += String.Format("desc:{0}={1}\r\n\r\n", langval.Key.ToLower(), TrimDesc(langval.Value));
+                };
                 sw.WriteLine("<description><![CDATA[" + desc + "]]></description>");
                 foreach (RecWaypoint wp in kCat.Value.Waypoints)
                 {
                     sw.WriteLine("<Placemark>");
                     sw.WriteLine("<name><![CDATA[" + wp.Name + "]]></name>");
                     string text = "";
-                    foreach (KeyValuePair<string, string> langval in wp.ShortName)
-                        text += String.Format("name:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
+                    if (GPIReader.SAVE_MULTINAMES)
+                        foreach (KeyValuePair<string, string> langval in wp.ShortName)
+                            text += String.Format("name:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
                     if (wp.Comment != null)
                         foreach (KeyValuePair<string, string> langval in wp.Comment.Comment)
                             text += String.Format("comm:{0}={1}\r\n", langval.Key.ToLower(), langval.Value);
@@ -1017,7 +1027,7 @@ namespace KMZ_Viewer
                     };
                     if ((wp.Description != null) && (wp.Description.Description.Count > 0))
                     {
-                        text += "\r\n";
+                        if (text.Length > 0) text += "\r\n";
                         foreach (KeyValuePair<string, string> langval in wp.Description.Description)
                             text += String.Format("desc:{0}={1}\r\n\r\n", langval.Key.ToLower(), TrimDesc(langval.Value));
                     };
@@ -1047,25 +1057,32 @@ namespace KMZ_Viewer
             {
                 sw.WriteLine("\t<Style id=\"" + simid + "\"><IconStyle><Icon><href>images/" + simid + ".jpg</href></Icon></IconStyle></Style>");
             };
-            if (this.Add2Log != null) this.Add2Log(String.Format("Saving Images for {0} Categories...", this.Categories.Count));
-            foreach (KeyValuePair<ushort, RecCategory> kCat in this.Categories)
+            if (CREATE_CATEGORY_IMAGES_IFNO)
             {
-                if (kCat.Value.Bitmap != null) continue;
-                string catID = "catid" + kCat.Value.CategoryID.ToString();
-                sw.WriteLine("\t<Style id=\"" + catID + "\"><IconStyle><Icon><href>images/" + catID + ".png</href></Icon></IconStyle></Style>");
-                try
+                if (this.Add2Log != null)
+                    this.Add2Log(String.Format("Saving Images for {0} Categories...", this.Categories.Count));
+                int imsvd = 0;
+                foreach (KeyValuePair<ushort, RecCategory> kCat in this.Categories)
                 {
-                    Image im = new Bitmap(16, 16);
-                    Graphics g = Graphics.FromImage(im);
-                    g.FillEllipse(Brushes.Magenta, 0, 0, 16, 16);
-                    string ttd = kCat.Value.CategoryID.ToString();
-                    while (ttd.Length < 2) ttd = "0" + ttd;
-                    g.DrawString(ttd, new Font("MS Sans Serif", 8), Brushes.Black, 0, 2);
-                    g.Dispose();
-                    im.Save(images_file_dir + catID + ".png");
-                }
-                catch (Exception ex) { };
-            }
+                    if (kCat.Value.Bitmap != null) continue;
+                    string catID = "catid" + kCat.Value.CategoryID.ToString();
+                    sw.WriteLine("\t<Style id=\"" + catID + "\"><IconStyle><Icon><href>images/" + catID + ".png</href></Icon></IconStyle></Style>");
+                    try
+                    {
+                        Image im = new Bitmap(16, 16);
+                        Graphics g = Graphics.FromImage(im);
+                        g.FillEllipse(Brushes.Magenta, 0, 0, 16, 16);
+                        string ttd = kCat.Value.CategoryID.ToString();
+                        while (ttd.Length < 2) ttd = "0" + ttd;
+                        g.DrawString(ttd, new Font("MS Sans Serif", 8), Brushes.Black, 0, 2);
+                        g.Dispose();
+                        im.Save(images_file_dir + catID + ".png");
+                        imsvd++;
+                    }
+                    catch (Exception ex) { };
+                };
+                if (this.Add2Log != null) this.Add2Log(String.Format("Saved {0} Images", imsvd));
+            };
             if (this.Add2Log != null) this.Add2Log(String.Format("Saving {0} Bitmaps...", this.Bitmaps.Count));
             foreach (KeyValuePair<ushort, RecBitmap> bitmaps in this.Bitmaps)
             {
@@ -1166,7 +1183,7 @@ namespace KMZ_Viewer
         /// <returns></returns>
         private string TrimDesc(string text)
         {
-            while (text.IndexOf("\r\n\r\n") >= 0) text = text.Replace("\r\n\r\n", "");
+            while (text.IndexOf("\r\n\r\n") >= 0) text = text.Replace("\r\n\r\n", "\r\n");
             text = text.Trim(new char[] { '\r', '\n' });
             return text;
         }
