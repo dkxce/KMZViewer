@@ -19,6 +19,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace KMZ_Viewer
 {
@@ -703,6 +705,53 @@ namespace KMZ_Viewer
         public List<string> DateTimeList = new List<string>();
     }
 
+    [Serializable]
+    public class MarkerBlock
+    {
+        public MarkerBlock() { }
+
+        public static MarkerBlock FromBytes(byte[] data)
+        {
+            System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(typeof(MarkerBlock));
+            MemoryStream ms = new MemoryStream(data);
+            System.IO.StreamReader reader = new System.IO.StreamReader(ms, System.Text.Encoding.UTF8);
+            MarkerBlock c = (MarkerBlock)xs.Deserialize(reader);
+            ms.Close();
+            return c;
+        }
+
+        public byte[] ToBytes()
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+            this.Creator = "KMZRebuilder v" + fvi.FileVersion;
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = false;
+            settings.OmitXmlDeclaration = true;
+            settings.NewLineHandling = NewLineHandling.None;
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            System.Xml.Serialization.XmlSerializer xs = new System.Xml.Serialization.XmlSerializer(typeof(MarkerBlock));
+            System.IO.MemoryStream ms = new MemoryStream();
+            XmlWriter writer = XmlWriter.Create(ms, settings);
+            xs.Serialize(writer, this, ns);
+            writer.Flush();
+            ms.Position = 0;
+            byte[] bb = new byte[ms.Length];
+            ms.Read(bb, 0, bb.Length);
+            writer.Close();
+            ms.Close();
+            return bb;
+        }
+
+        [XmlArray("Bounds"), XmlArrayItem("B")]
+        public double[] Bounds = null;
+        public string Creator = "KMZRebuilder";
+        [XmlElement("DT")]
+        public DateTime Created = DateTime.MinValue;
+        public string Description = null;
+    }
+
     // 0xFFFF
     public sealed class RecEnd : Record
     {
@@ -845,6 +894,11 @@ namespace KMZ_Viewer
                 return null;
             }
         }
+
+        /// <summary>
+        ///     Marker Block
+        /// </summary>
+        public MarkerBlock MarkerData = null;
 
         /// <summary>
         ///     Constructor (GPI File Reader)
@@ -1147,26 +1201,30 @@ namespace KMZ_Viewer
                     };
                 };
             };
-            if (this.Add2Log != null) this.Add2Log(String.Format("Saving {0} Medias...", this.Medias.Count));
-            if (SAVE_MEDIA && (Medias.Count > 0))
+            if (SAVE_MEDIA && ((this.MarkerData == null ? this.Medias.Count : this.Medias.Count - 1) > 0))
             {
+                if (this.Add2Log != null)
+                    this.Add2Log(String.Format("Saving {0} Medias...", this.MarkerData == null ? this.Medias.Count : this.Medias.Count - 1));
                 string medias_file_dir = Path.GetDirectoryName(fileName) + @"\media\";
                 Directory.CreateDirectory(medias_file_dir);
                 foreach (KeyValuePair<ushort, RecMedia> rm in Medias)
                 {
                     for (int i = 0; i < rm.Value.Content.Count; i++)
                     {
-                        string ext = "bin";
-                        if (rm.Value.Format == 0) ext = "wav";
-                        if (rm.Value.Format == 1) ext = "mp3";
-                        string fName = String.Format("{0}{1}-{2}.{3}", medias_file_dir, rm.Value.MediaID, rm.Value.Content[i].Key, ext);
-                        try
+                        if (rm.Value.Format != 0x77)
                         {
-                            FileStream fsw = new FileStream(fName, FileMode.Create, FileAccess.Write);
-                            fsw.Write(rm.Value.Content[i].Value, 0, rm.Value.Content[i].Value.Length);
-                            fsw.Close();
-                        }
-                        catch (Exception ex) { };
+                            string ext = "bin";
+                            if (rm.Value.Format == 0) ext = "wav";
+                            if (rm.Value.Format == 1) ext = "mp3";
+                            string fName = String.Format("{0}{1}-{2}.{3}", medias_file_dir, rm.Value.MediaID, rm.Value.Content[i].Key, ext);
+                            try
+                            {
+                                FileStream fsw = new FileStream(fName, FileMode.Create, FileAccess.Write);
+                                fsw.Write(rm.Value.Content[i].Value, 0, rm.Value.Content[i].Value.Length);
+                                fsw.Close();
+                            }
+                            catch (Exception ex) { };
+                        };
                     };
                 };
             };
@@ -1174,6 +1232,11 @@ namespace KMZ_Viewer
             sw.Close();
             fs.Close();
             if (this.Add2Log != null) this.Add2Log("All data saved");
+            if ((this.MarkerData != null) && (this.Add2Log != null))
+            {
+                this.Add2Log(String.Format("Creator: {0}", this.MarkerData.Creator));
+                this.Add2Log(String.Format("Created: {0}", this.MarkerData.Created));
+            };
         }
 
         /// <summary>
@@ -1823,6 +1886,9 @@ namespace KMZ_Viewer
                     {
                         byte[] media = new byte[mlen];
                         Array.Copy(data, offset, media, 0, mlen); offset += mlen; readed += (int)mlen;
+                        if ((rec.MediaID == 0x7777) && (rec.Format == 0x77))
+                            try { this.MarkerData = MarkerBlock.FromBytes(media); }
+                            catch { };
                         rec.Content.Add(new KeyValuePair<string, byte[]>(lang, media));
                     }
                     else
