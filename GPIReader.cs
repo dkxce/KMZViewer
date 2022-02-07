@@ -846,6 +846,11 @@ namespace KMZ_Viewer
         public Dictionary<ushort, RecCategory> Categories = new Dictionary<ushort, RecCategory>();
 
         /// <summary>
+        ///     Default Category
+        /// </summary>
+        private RecCategory DefaultCategory = new RecCategory(null);
+
+        /// <summary>
         ///     List of Bitmaps in file
         /// </summary>
         public Dictionary<ushort, RecBitmap> Bitmaps = new Dictionary<ushort, RecBitmap>();
@@ -910,6 +915,7 @@ namespace KMZ_Viewer
             this.fileName = fileName;
             this.Read();
             this.LoopRecords(this.RootElement.Childs);
+            this.IfNoCats();
         }
 
         /// <summary>
@@ -924,7 +930,15 @@ namespace KMZ_Viewer
             if (Add2Log != null) Add2Log(String.Format("POI File, version {0}", this.Version));
             if (Add2Log != null) Add2Log("Reading References...");
             this.LoopRecords(this.RootElement.Childs);
+            this.IfNoCats();
             if (Add2Log != null) Add2Log("Reading Done");
+        }
+
+        private void IfNoCats()
+        {
+            if (this.Categories.Count > 0) return;
+            this.DefaultCategory.Category.Add(new KeyValuePair<string, string>("EN", "No Category"));
+            this.Categories.Add(0, this.DefaultCategory);
         }
 
         /// <summary>
@@ -1264,6 +1278,8 @@ namespace KMZ_Viewer
             foreach (Record r in records)
             {
                 GetReferences(r);
+                if ((this.Categories.Count == 0) && (r is RecWaypoint))
+                    DefaultCategory.Waypoints.Add((RecWaypoint)r);
                 LoopRecords(r.Childs);
             };
         }
