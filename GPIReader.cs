@@ -749,6 +749,7 @@ namespace KMZ_Viewer
         public string Creator = "KMZRebuilder";
         [XmlElement("DT")]
         public DateTime Created = DateTime.MinValue;
+        public uint AlertZones = 0;
         public string Description = null;
     }
 
@@ -1234,8 +1235,10 @@ namespace KMZ_Viewer
             if (this.Add2Log != null) this.Add2Log("All data saved");
             if ((this.MarkerData != null) && (this.Add2Log != null))
             {
+                this.Add2Log(String.Format(System.Globalization.CultureInfo.InvariantCulture, "Bounds: {0:0.000000},{2:0.000000} - {1:0.000000},{3:0.000000}", this.MarkerData.Bounds[0], this.MarkerData.Bounds[1], this.MarkerData.Bounds[2], this.MarkerData.Bounds[3]));
                 this.Add2Log(String.Format("Creator: {0}", this.MarkerData.Creator));
                 this.Add2Log(String.Format("Created: {0}", this.MarkerData.Created));
+                this.Add2Log(String.Format("Alert Zones: {0}", this.MarkerData.AlertZones));
             };
         }
 
@@ -1357,6 +1360,10 @@ namespace KMZ_Viewer
                 {
                     bool processExtras = ReadMainBlock(ref data, rec);
                     if (processExtras && rec.RecHasExtra) ReadData(ref data, rec.OffsetExtra, rec.LengthExtra, rec);
+                }
+                else
+                {
+
                 };
             }
             catch (Exception ex)
@@ -1454,6 +1461,7 @@ namespace KMZ_Viewer
                 uint offset = rec.OffsetMain;
                 rec.Proximity = BitConverter.ToUInt16(data, (int)offset);
                 rec.cSpeed = BitConverter.ToUInt16(data, (int)offset + 2);
+                ushort flags = BitConverter.ToUInt16(data, (int)offset + 4);
                 rec.Alert = data[(int)offset + 8];
                 rec.AlertType = data[(int)offset + 9];
                 rec.SoundNumber = data[(int)offset + 10];
