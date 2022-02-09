@@ -21,6 +21,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.InteropServices;
 
 namespace KMZ_Viewer
 {
